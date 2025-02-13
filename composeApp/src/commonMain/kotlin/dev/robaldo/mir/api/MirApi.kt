@@ -1,5 +1,7 @@
 package dev.robaldo.mir.api
 
+import dev.robaldo.mir.enums.BotBadgeStatus
+import dev.robaldo.mir.models.BotStatus
 import dev.robaldo.mir.models.Mission
 import dev.robaldo.mir.models.requests.post.EnqueueMission
 import io.ktor.client.HttpClient
@@ -59,9 +61,17 @@ object MirApi {
 
         println(response.bodyAsText())
 
-        if(response.status != HttpStatusCode.Created) {
-            return false
+        return response.status == HttpStatusCode.Created
+    }
+
+    suspend fun getBotStatus(): BotStatus? {
+        val response = client.get(Url("http://$mirIp_TEMP$baseUrl/status")) {
+            headers {
+                append("Authorization", "Basic aXRpc2RlbHBvenpvOjlhZDVhYjA0NDVkZTE4ZDI4Nzg0NjMzNzNkNmRiZGIxZWUzZTFmZjg2YzBhYmY4OGJiMzU5YzNkYzVmMzBiNGQ=")
+            }
         }
-        return true
+
+        if(response.status != HttpStatusCode.OK) return null
+        return Json.decodeFromString<BotStatus>(response.bodyAsText())
     }
 }

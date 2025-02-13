@@ -18,16 +18,16 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavHostController
 import dev.robaldo.mir.definitions.Routes
+import dev.robaldo.mir.enums.BotBadgeStatus
 import dev.robaldo.mir.models.NavRoute
 
 
 @Composable
 fun AppNavigationBar(
-    navHostController: NavHostController
+    navHostController: NavHostController,
+    botBadgeStatus: BotBadgeStatus
 ) {
     val navRoutes = listOf(
         NavRoute("Home", Routes.HOME, Icons.Rounded.Home, Icons.Outlined.Home),
@@ -46,7 +46,7 @@ fun AppNavigationBar(
                     if(route.showBadge) {
                         BadgedBox (
                             badge = {
-                                Badge( containerColor = Color.Green )
+                                Badge( containerColor = botBadgeStatus.toColor() )
                             }
                         ) {
                             Icon(route.icon, contentDescription = route.name )

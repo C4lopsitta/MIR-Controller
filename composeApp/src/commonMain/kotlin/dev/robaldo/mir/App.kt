@@ -13,11 +13,18 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import dev.robaldo.mir.api.MirApi
 import dev.robaldo.mir.definitions.Routes
+import dev.robaldo.mir.enums.BotBadgeStatus
+import dev.robaldo.mir.models.BotStatus
 import dev.robaldo.mir.ui.components.AppNavigationBar
 import dev.robaldo.mir.ui.routes.Home
 import dev.robaldo.mir.ui.routes.MirBotManagement
 import dev.robaldo.mir.ui.routes.Missions
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
+import kotlinx.coroutines.launch
 import okio.Path.Companion.toPath
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -39,12 +46,41 @@ fun App(colorScheme: ColorScheme) {
     val navController = rememberNavController()
     var topBar by remember { mutableStateOf<(@Composable () -> Unit)?>(null) }
     var fab by remember { mutableStateOf<(@Composable () -> Unit)?>(null) }
+    var botBadgeStatus by remember { mutableStateOf(BotBadgeStatus.DISCONNECTED) }
+    var botStatus by remember { mutableStateOf<BotStatus?>(null) }
+
+    CoroutineScope(Dispatchers.IO).launch {
+        val status = MirApi.getBotStatus()
+
+        if(status == null) {
+            botBadgeStatus = BotBadgeStatus.DISCONNECTED
+            botStatus = null
+            return@launch
+        }
+
+        if(status.errors.isEmpty()) {
+            botBadgeStatus = when (status.state_id) {
+                3 -> BotBadgeStatus.READY
+                4 -> BotBadgeStatus.PAUSED
+                11 -> BotBadgeStatus.MANUAL_CONTROL
+                else -> BotBadgeStatus.DISCONNECTED
+            }
+        } else {
+            botBadgeStatus = BotBadgeStatus.ERROR
+        }
+
+        botStatus = status
+    }
 
     MaterialTheme (
         colorScheme = colorScheme
     ) {
         Scaffold (
-            bottomBar = { AppNavigationBar(navHostController = navController) },
+            bottomBar = {
+                AppNavigationBar(
+                    navHostController = navController,
+                    botBadgeStatus = botBadgeStatus)
+            },
             topBar = topBar ?: {},
             floatingActionButton = fab ?: {}
         ) { paddingValues ->
