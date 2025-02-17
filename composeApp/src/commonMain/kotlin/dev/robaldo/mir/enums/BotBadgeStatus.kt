@@ -21,4 +21,15 @@ enum class BotBadgeStatus {
             ERROR -> Color.Red
         }
     }
+
+    companion object {
+        fun FromStatus(status: Int): BotBadgeStatus {
+            return when (status) {
+                3 -> BotBadgeStatus.READY
+                4 -> BotBadgeStatus.PAUSED
+                11 -> BotBadgeStatus.MANUAL_CONTROL
+                else -> BotBadgeStatus.DISCONNECTED
+            }
+        }
+    }
 }

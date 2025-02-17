@@ -23,6 +23,7 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -37,6 +38,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import dev.robaldo.mir.api.MirApi
+import dev.robaldo.mir.api.caller
 import dev.robaldo.mir.models.Mission
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -46,13 +48,16 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Missions(
+    snackbarHostState: SnackbarHostState,
     setTopBar: @Composable (@Composable () -> Unit) -> Unit,
     setFab: @Composable (@Composable () -> Unit) -> Unit
 ) {
     var missions by remember { mutableStateOf<List<Mission>>(emptyList()) }
 
     LaunchedEffect(Unit) {
-        missions = MirApi.getMissions()
+        missions = (caller(snackbarHostState) {
+            MirApi.getMissions()
+        } ?: emptyList<Mission>()) as List<Mission>
     }
 
     setTopBar {

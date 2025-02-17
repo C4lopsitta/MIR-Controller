@@ -12,7 +12,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun Home() {
+fun Home(
+    setTopBar: @Composable ((@Composable () -> Unit)?) -> Unit,
+    setFab: @Composable ((@Composable () -> Unit)?) -> Unit
+) {
+    setFab(null)
+    setTopBar(null)
+
     Column {
         Icon(Icons.Rounded.Home, contentDescription = "Home", modifier = Modifier.height(24.dp).width(24.dp))
         Text("Home UI")
