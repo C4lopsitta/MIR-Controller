@@ -1,9 +1,8 @@
 package dev.robaldo.mir.api
 
-import dev.robaldo.mir.enums.BotBadgeStatus
 import dev.robaldo.mir.models.BotStatus
-import dev.robaldo.mir.models.Mission
 import dev.robaldo.mir.models.requests.post.EnqueueMission
+import dev.robaldo.mir.models.responses.get.Item
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -38,19 +37,19 @@ object MirApi {
     }
 
 
-    suspend fun getMissions(): List<Mission> {
+    suspend fun getMissions(): List<Item> {
         val response = client.get(Url("http://$mirIp_TEMP$baseUrl/missions")) {
             headers {
                 append("Authorization", "Basic aXRpc2RlbHBvenpvOjlhZDVhYjA0NDVkZTE4ZDI4Nzg0NjMzNzNkNmRiZGIxZWUzZTFmZjg2YzBhYmY4OGJiMzU5YzNkYzVmMzBiNGQ=")
             }
         }
         println(response.bodyAsText())
-        val missions = Json.decodeFromString<List<Mission>>(response.bodyAsText())
+        val missions = Json.decodeFromString<List<Item>>(response.bodyAsText())
         return missions
     }
 
 
-    suspend fun addMissionToQueue(mission: Mission): Boolean {
+    suspend fun addMissionToQueue(mission: Item): Boolean {
         val response = client.post(Url("http://$mirIp_TEMP$baseUrl/mission_queue")) {
             headers {
                 append("Authorization", "Basic aXRpc2RlbHBvenpvOjlhZDVhYjA0NDVkZTE4ZDI4Nzg0NjMzNzNkNmRiZGIxZWUzZTFmZjg2YzBhYmY4OGJiMzU5YzNkYzVmMzBiNGQ=")
@@ -72,7 +71,23 @@ object MirApi {
         }
 
         if(response.status != HttpStatusCode.OK) return null
+
+        println(response.bodyAsText())
+
         val json = Json { ignoreUnknownKeys = true }
         return json.decodeFromString<BotStatus>(response.bodyAsText())
+    }
+
+    suspend fun getMaps(): List<Item> {
+        val response = client.get(Url("http://$mirIp_TEMP$baseUrl/maps")) {
+            headers {
+                append("Authorization", "Basic aXRpc2RlbHBvenpvOjlhZDVhYjA0NDVkZTE4ZDI4Nzg0NjMzNzNkNmRiZGIxZWUzZTFmZjg2YzBhYmY4OGJiMzU5YzNkYzVmMzBiNGQ=")
+            }
+        }
+
+        if(response.status != HttpStatusCode.OK) return emptyList()
+
+        val json = Json { ignoreUnknownKeys = true }
+        return json.decodeFromString<List<Item>>(response.bodyAsText())
     }
 }

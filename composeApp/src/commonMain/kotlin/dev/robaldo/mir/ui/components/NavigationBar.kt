@@ -1,5 +1,7 @@
 package dev.robaldo.mir.ui.components
 
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Map
@@ -14,20 +16,28 @@ import androidx.compose.material.icons.rounded.SportsEsports
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import dev.robaldo.mir.definitions.Routes
 import dev.robaldo.mir.enums.BotBadgeStatus
+import dev.robaldo.mir.models.BotStatus
 import dev.robaldo.mir.models.NavRoute
 
 
 @Composable
 fun AppNavigationBar(
     navHostController: NavHostController,
-    botBadgeStatus: BotBadgeStatus
+    botStatus: BotStatus?
 ) {
     val navRoutes = listOf(
         NavRoute("Home", Routes.HOME, Icons.Rounded.Home, Icons.Outlined.Home),
@@ -36,6 +46,10 @@ fun AppNavigationBar(
         NavRoute("Maps", Routes.MAPS, Icons.Rounded.Map, Icons.Outlined.Map),
         NavRoute("MIR", Routes.ROBOT, Icons.Rounded.SmartToy, Icons.Outlined.SmartToy, showBadge = true)
     )
+
+    val botBadgeStatus by derivedStateOf {
+        if(botStatus != null) BotBadgeStatus.fromStatus(botStatus.stateId) else BotBadgeStatus.DISCONNECTED
+    }
 
     BottomAppBar (
 
@@ -46,14 +60,34 @@ fun AppNavigationBar(
                     if(route.showBadge) {
                         BadgedBox (
                             badge = {
-                                Badge( containerColor = botBadgeStatus.toColor() )
+                                if(botBadgeStatus == BotBadgeStatus.ERROR) {
+                                    Badge(
+                                        containerColor = botBadgeStatus.toColor(),
+                                        content = {
+                                            Text(
+                                                "${if ((botStatus?.errors?.size ?: 0) < 10) botStatus?.errors?.size ?: 0 else "9+"}",
+                                                fontWeight = FontWeight.SemiBold
+                                            )
+                                        }
+                                    )
+                                } else if(botBadgeStatus == BotBadgeStatus.EXECUTING) {
+                                    Badge (
+                                        containerColor = Color.Transparent
+                                    ) {
+                                        CircularProgressIndicator( modifier = Modifier.width(16.dp).height(12.dp) )
+                                    }
+                                } else {
+                                    Badge(
+                                        containerColor = botBadgeStatus.toColor()
+                                    )
+                                }
                             }
                         ) {
                             Icon(route.icon, contentDescription = route.name )
                         }
                     } else Icon(route.icon, contentDescription = route.name )
                 },
-                selected = false,
+                selected = route.route == navHostController.currentBackStackEntry?.destination?.route,
                 onClick = {
                     navHostController.navigate(route.route)
                 },

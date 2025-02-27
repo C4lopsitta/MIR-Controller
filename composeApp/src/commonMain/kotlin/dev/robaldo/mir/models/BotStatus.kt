@@ -1,24 +1,28 @@
 package dev.robaldo.mir.models
 
+import androidx.lifecycle.ViewModel
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class BotStatus(
-    val battery_percentage: Float,
-    val battery_time_remaining: Int,
-    val mission_queue_id: Int?,
-    val mission_queue_url: String?,
-    val mission_text: String?,
-    val state_id: Int,
-    val state_text: String,
-    val mode_id: Int,
-    val mode_text: String,
-    val position: MirBotPosition,
-    val velocity: MirBotVelocity,
-    val errors: List<String>,
-    val uptime: Int,
-    val robot_name: String,
-    val serial_number: String,
-    val joystick_web_session_id: String
-)
+class BotStatus constructor(
+    @SerialName("battery_percentage") val batteryPercentage: Float,
+    @SerialName("battery_time_remaining") val batteryTimeRemaining: Int,
+    @SerialName("mission_queue_id") val missionQueueId: Int?,
+    @SerialName("mission_queue_url") val missionQueueUrl: String?,
+    @SerialName("mission_text") val missionText: String?,
+    @SerialName("state_id") val stateId: Int,
+    @SerialName("state_text") val stateText: String,
+    @SerialName("mode_id") val modeId: Int,
+    @SerialName("mode_text") val modeText: String,
+    @SerialName("position") val position: MirBotPosition,
+    @SerialName("velocity") val velocity: MirBotVelocity,
+    @SerialName("errors") val errors: List<BotError>,
+    @SerialName("uptime") val uptime: Int,
+    @SerialName("robot_name") val robotName: String,
+    @SerialName("serial_number") val serialNumber: String,
+    @SerialName("joystick_web_session_id") val joystickSessionWebId: String
+) : ViewModel() {
+
+}
 

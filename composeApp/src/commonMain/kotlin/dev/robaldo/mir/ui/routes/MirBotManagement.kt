@@ -7,8 +7,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Circle
+import androidx.compose.material.icons.rounded.Error
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -34,38 +36,19 @@ import kotlin.math.roundToInt
 @Composable
 fun MirBotManagement(
     botStatus: BotStatus?,
-    setTopBar: @Composable ((@Composable () -> Unit)?) -> Unit,
     setFab: @Composable ((@Composable () -> Unit)?) -> Unit
 ) {
-    val botPercentage by remember {
-        derivedStateOf{
-            BatteryStatus.FromBatteryPercentage(botStatus?.battery_percentage ?: 0f)
-        }
+    val botPercentage by derivedStateOf{
+            BatteryStatus.FromBatteryPercentage(botStatus?.batteryPercentage ?: 0f)
     }
 
     setFab(null)
-    setTopBar {
-        TopAppBar(
-            title = {
-                Column {
-                    Text("Status", style = MaterialTheme.typography.titleLarge)
-                    Text(
-                        botStatus?.state_text ?: "MIR Bot is Disconnected",
-                        style = MaterialTheme.typography.bodySmall
-                    )
-                }
-            },
-            actions = {
-                Icon(botPercentage.toIcon(), contentDescription = null, modifier = Modifier.padding( horizontal = 12.dp ))
-            }
-        )
-    }
 
     LazyColumn (
         modifier = Modifier.padding( horizontal = 12.dp )
     ) {
         if(botStatus != null) {
-            item { Text(botStatus.robot_name, style = MaterialTheme.typography.titleLarge) }
+            item { Text(botStatus.robotName, style = MaterialTheme.typography.titleLarge) }
             item {
                 DataPairRow(
                     labelLeft = "Battery",
@@ -74,7 +57,7 @@ fun MirBotManagement(
                         Row {
                             Icon(botPercentage.toIcon(), contentDescription = null)
                             Text(
-                                "${botStatus.battery_percentage.roundToInt()}%",
+                                "${botStatus.batteryPercentage.roundToInt()}%",
                                 fontSize = 24.sp,
                                 fontWeight = FontWeight.SemiBold,
                                 lineHeight = 24.sp
@@ -96,9 +79,9 @@ fun MirBotManagement(
                         Row (
                             horizontalArrangement = Arrangement.spacedBy( 8.dp )
                         ) {
-                            Icon(Icons.Rounded.Circle, contentDescription = null, tint = BotBadgeStatus.FromStatus(botStatus.state_id).toColor())
+                            Icon(Icons.Rounded.Circle, contentDescription = null, tint = BotBadgeStatus.fromStatus(botStatus.stateId).toColor())
                             Text(
-                                botStatus.state_text,
+                                botStatus.stateText,
                                 fontSize = 24.sp,
                                 fontWeight = FontWeight.SemiBold,
                                 lineHeight = 24.sp
@@ -106,7 +89,7 @@ fun MirBotManagement(
                         }
                     },
                     dataRight = {
-                        Text(botStatus.mode_text, fontSize = 24.sp, fontWeight = FontWeight.SemiBold)
+                        Text(botStatus.modeText, fontSize = 24.sp, fontWeight = FontWeight.SemiBold)
                     }
                 )
                 HorizontalDivider()
@@ -120,7 +103,7 @@ fun MirBotManagement(
                         Text("X: ${String.format("%.3f", botStatus.position.x)}; Y: ${String.format("%.3f", botStatus.position.y)}", fontSize = 24.sp, fontWeight = FontWeight.SemiBold)
                     },
                     dataRight = {
-                        Text("${"%.3f".format(botStatus.position.orientation + 180)} degrees", fontSize = 24.sp, fontWeight = FontWeight.SemiBold)
+                        Text("${"%.1f".format(botStatus.position.orientation + 180)} degrees", fontSize = 24.sp, fontWeight = FontWeight.SemiBold)
                     }
                 )
                 HorizontalDivider()
@@ -135,6 +118,28 @@ fun MirBotManagement(
                     }
                 )
                 HorizontalDivider()
+            }
+
+            if(botStatus.errors.isNotEmpty()) {
+                item {
+                    Row (
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(Icons.Rounded.Error, contentDescription = "Error", modifier = Modifier.padding( end = 4.dp ))
+                        Text(
+                            "Error${if (botStatus.errors.size > 1) "s" else ""}",
+                            fontSize = 24.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            modifier = Modifier.padding(vertical = 8.dp)
+                        )
+                    }
+                }
+                items(botStatus.errors) {
+                    Text((it.description ?: "Unknown Error") + " (${it.code})")
+                }
+                item {
+                    HorizontalDivider()
+                }
             }
         } else {
             item {

@@ -39,7 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import dev.robaldo.mir.api.MirApi
 import dev.robaldo.mir.api.caller
-import dev.robaldo.mir.models.Mission
+import dev.robaldo.mir.models.responses.get.Item
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -49,29 +49,14 @@ import kotlinx.coroutines.launch
 @Composable
 fun Missions(
     snackbarHostState: SnackbarHostState,
-    setTopBar: @Composable (@Composable () -> Unit) -> Unit,
     setFab: @Composable (@Composable () -> Unit) -> Unit
 ) {
-    var missions by remember { mutableStateOf<List<Mission>>(emptyList()) }
+    var missions by remember { mutableStateOf<List<Item>>(emptyList()) }
 
     LaunchedEffect(Unit) {
         missions = (caller(snackbarHostState) {
             MirApi.getMissions()
-        } ?: emptyList<Mission>()) as List<Mission>
-    }
-
-    setTopBar {
-        TopAppBar(
-            title = { Text("Missions") },
-            actions = {
-                IconButton(
-                    content = { Icon(Icons.Rounded.FilterAlt, contentDescription = "Filter missions") },
-                    onClick = {
-
-                    }
-                )
-            }
-        )
+        } ?: emptyList<Item>()) as List<Item>
     }
 
     setFab {
