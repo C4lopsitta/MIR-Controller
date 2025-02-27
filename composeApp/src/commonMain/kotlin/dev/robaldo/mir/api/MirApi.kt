@@ -72,6 +72,7 @@ object MirApi {
         }
 
         if(response.status != HttpStatusCode.OK) return null
-        return Json.decodeFromString<BotStatus>(response.bodyAsText())
+        val json = Json { ignoreUnknownKeys = true }
+        return json.decodeFromString<BotStatus>(response.bodyAsText())
     }
 }

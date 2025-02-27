@@ -9,3 +9,5 @@ data class NavRoute(
     val selectedIcon: ImageVector,
     val showBadge: Boolean = false
 )
+
+

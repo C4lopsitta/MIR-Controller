@@ -21,3 +21,4 @@ data class BotStatus(
     val serial_number: String,
     val joystick_web_session_id: String
 )
+

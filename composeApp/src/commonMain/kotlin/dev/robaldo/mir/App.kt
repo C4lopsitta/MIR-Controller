@@ -6,6 +6,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -19,6 +20,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import dev.robaldo.mir.api.MirApi
 import dev.robaldo.mir.api.caller
@@ -63,7 +65,7 @@ fun App(colorScheme: ColorScheme) {
     // region botStatus
     var botStatus by remember { mutableStateOf<BotStatus?>(null) }
     var botBadgeStatus by remember { mutableStateOf(BotBadgeStatus.DISCONNECTED) }
-    var botStatusPollingDelay by remember { mutableStateOf(5000L) }
+    var botStatusPollingDelay by remember { mutableStateOf(500L) }
     var doAutoUpdateBotStatus by remember { mutableStateOf(true) }
     var reloadTrigger by remember { mutableStateOf(false) }
     // endregion botStatus
@@ -126,9 +128,11 @@ fun App(colorScheme: ColorScheme) {
                 composable(Routes.HOME) {
                     Home(
                         setTopBar = { topBar = it },
-                        setFab = { fab = it }
+                        setFab = { fab = it },
+                        botStatus = botStatus
                     )
                 }
+
                 composable(Routes.CONTROLLER) { Text("Controller") }
                 composable(Routes.MISSIONS) {
                     Missions (
