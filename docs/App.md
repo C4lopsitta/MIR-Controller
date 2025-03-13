@@ -42,10 +42,30 @@ sequenceDiagram
     end
 
     loop Automatic status querying
-    App ->> API: Query Status
-    API -->> App: JSON Response
+    App ->>+ API: Query Status
+    API -->>- App: JSON Response
     end
-
 ```
 
+### Mission enqueueing and running
+```mermaid
+sequenceDiagram
+    actor User
+    participant App
+    box transparent MIR 100 Robot
+    %% participant WebSocket
+    participant API
+    end
+
+    App ->>+ API: Query Missions
+    API -->>- App: Return Missions
+
+    loop User chooses missions
+    User ->> App: Chooses mission to enqueue
+    App ->> API: Adds mission to queue
+    end
+    User ->> App: Runs queue
+    App ->> API: Queue is started
+
+```
 
