@@ -66,6 +66,31 @@ sequenceDiagram
     end
     User ->> App: Runs queue
     App ->> API: Queue is started
+```
 
+### Manual Control
+```mermaid
+sequenceDiagram
+    actor User
+    participant App
+    box transparent MIR 100 Robot
+    participant API
+    participant WebSocket
+    end
+
+    User ->>+ App: Sets Robot to Manual mode
+
+    App ->>- API: Set Status to Manual Control
+    App ->>+ API: Query Status
+    API -->>- App: Return Status
+    App ->>+ App: Get joystick socket ID
+
+    loop User chooses missions
+    User ->>+ App: User interacts with controlller
+    App ->>- WebSocket: Send movement data
+    end
+    
+    User ->>+ App: Stops manual control
+    App ->>- API: Sets robot to Standard Mode
 ```
 
