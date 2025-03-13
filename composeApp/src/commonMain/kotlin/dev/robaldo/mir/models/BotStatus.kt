@@ -1,5 +1,10 @@
 package dev.robaldo.mir.models
 
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Card
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
