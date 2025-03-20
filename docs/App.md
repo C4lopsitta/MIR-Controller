@@ -85,7 +85,7 @@ sequenceDiagram
     API -->>- App: Return Status
     App ->>+ App: Get joystick socket ID
 
-    loop User chooses missions
+    loop In Manual Control
     User ->>+ App: User interacts with controlller
     App ->>- WebSocket: Send movement data
     end
