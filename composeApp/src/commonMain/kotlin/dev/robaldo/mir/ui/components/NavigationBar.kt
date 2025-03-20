@@ -48,10 +48,6 @@ fun AppNavigationBar(
         NavRoute("MIR", Routes.ROBOT, Icons.Rounded.SmartToy, Icons.Outlined.SmartToy, showBadge = true)
     )
 
-    val botBadgeStatus by derivedStateOf {
-        if(botViewModel.status.value != null) BotBadgeStatus.fromStatus(botViewModel.status.value!!.stateId) else BotBadgeStatus.DISCONNECTED
-    }
-
     BottomAppBar (
 
     ) {
@@ -61,9 +57,9 @@ fun AppNavigationBar(
                     if(route.showBadge) {
                         BadgedBox (
                             badge = {
-                                if(botBadgeStatus == BotBadgeStatus.ERROR) {
+                                if(botViewModel.badge.value == BotBadgeStatus.ERROR) {
                                     Badge(
-                                        containerColor = botBadgeStatus.toColor(),
+                                        containerColor = botViewModel.badge.value.toColor(),
                                         content = {
                                             Text(
                                                 "${if ((botViewModel.status.value?.errors?.size ?: 0) < 10) botViewModel.status.value?.errors?.size ?: 0 else "9+"}",
@@ -71,7 +67,7 @@ fun AppNavigationBar(
                                             )
                                         }
                                     )
-                                } else if(botBadgeStatus == BotBadgeStatus.EXECUTING) {
+                                } else if(botViewModel.badge.value == BotBadgeStatus.EXECUTING) {
                                     Badge (
                                         containerColor = Color.Transparent
                                     ) {
@@ -79,7 +75,7 @@ fun AppNavigationBar(
                                     }
                                 } else {
                                     Badge(
-                                        containerColor = botBadgeStatus.toColor()
+                                        containerColor = botViewModel.badge.value.toColor()
                                     )
                                 }
                             }

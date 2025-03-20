@@ -24,10 +24,6 @@ fun TopBar(
     botViewModel: BotViewModel,
     actions: @Composable RowScope.() -> Unit = {}
 ) {
-    val botPercentage by derivedStateOf {
-        BatteryStatus.FromBatteryPercentage(botViewModel.status.value?.batteryPercentage ?: 0f)
-    }
-
     TopAppBar(
         title = {
             Column {
@@ -40,7 +36,7 @@ fun TopBar(
         },
         actions = {
             actions()
-            Icon(botPercentage.toIcon(), contentDescription = null, modifier = Modifier.padding( horizontal = 12.dp ))
+            Icon(botViewModel.batteryStatus.value.toIcon(), contentDescription = null, modifier = Modifier.padding( horizontal = 12.dp ))
         }
     )
 }

@@ -61,20 +61,12 @@ fun App(
     // endregion app
 
     // region botStatus
-    var botStatusPollingDelay by remember { mutableStateOf(500L) }
-    var doAutoUpdateBotStatus by remember { mutableStateOf(true) }
-    var reloadTrigger by remember { mutableStateOf(false) }
+//    var botStatusPollingDelay by remember { mutableStateOf(500L) }
+//    var doAutoUpdateBotStatus by remember { mutableStateOf(true) }
     // endregion botStatus
 
     val navController = rememberNavController()
     var fab by remember { mutableStateOf<(@Composable () -> Unit)?>(null) }
-
-//
-//    LaunchedEffect(key1 = reloadTrigger) {
-//        updateBotStatus()
-//        delay(botStatusPollingDelay)
-//        if(doAutoUpdateBotStatus) reloadTrigger = !reloadTrigger
-//    }
 
     LaunchedEffect(uiEvents) {
         uiEvents.collect { event ->

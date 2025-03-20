@@ -39,10 +39,6 @@ fun MirBotManagement(
     botViewModel: BotViewModel,
     setFab: @Composable ((@Composable () -> Unit)?) -> Unit
 ) {
-    val botPercentage by derivedStateOf{
-            BatteryStatus.FromBatteryPercentage(botViewModel.status.value?.batteryPercentage ?: 0f)
-    }
-
     setFab(null)
 
     LazyColumn (
@@ -56,7 +52,7 @@ fun MirBotManagement(
                     labelRight = "Uptime",
                     dataLeft = {
                         Row {
-                            Icon(botPercentage.toIcon(), contentDescription = null)
+                            Icon(botViewModel.batteryStatus.value.toIcon(), contentDescription = null)
                             Text(
                                 "${botViewModel.status.value!!.batteryPercentage.roundToInt()}%",
                                 fontSize = 24.sp,
@@ -80,7 +76,7 @@ fun MirBotManagement(
                         Row (
                             horizontalArrangement = Arrangement.spacedBy( 8.dp )
                         ) {
-                            Icon(Icons.Rounded.Circle, contentDescription = null, tint = BotBadgeStatus.fromStatus(botViewModel.status.value!!.stateId).toColor())
+                            Icon(Icons.Rounded.Circle, contentDescription = null, tint = botViewModel.badge.value.toColor())
                             Text(
                                 botViewModel.status.value!!.stateText,
                                 fontSize = 24.sp,

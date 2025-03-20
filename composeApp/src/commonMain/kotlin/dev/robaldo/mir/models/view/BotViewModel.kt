@@ -1,6 +1,7 @@
 package dev.robaldo.mir.models.view
 
 import androidx.compose.runtime.State
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -19,11 +20,13 @@ class BotViewModel(
     private val _status = mutableStateOf<BotStatus?>(null)
     val status: State<BotStatus?> = _status
 
-    private val _batteryStatus = mutableStateOf<BatteryStatus?>(null)
-    val batteryStatus: State<BatteryStatus?> = _batteryStatus
+    val batteryStatus = derivedStateOf {
+        if(_status.value != null) BatteryStatus.FromBatteryPercentage(_status.value!!.batteryPercentage) else BatteryStatus.EMPTY_0
+    }
 
-    private val _badge = mutableStateOf<BotBadgeStatus?>(null)
-    val badge: State<BotBadgeStatus?> = _badge
+    val badge: State<BotBadgeStatus> = derivedStateOf {
+        if(_status.value != null) BotBadgeStatus.fromStatus(_status.value!!.stateId) else BotBadgeStatus.DISCONNECTED
+    }
 
     private val _isLoading = mutableStateOf(false)
     val isLoading: State<Boolean> = _isLoading
