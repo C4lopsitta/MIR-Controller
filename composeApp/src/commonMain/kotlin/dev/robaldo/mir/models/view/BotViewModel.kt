@@ -40,12 +40,13 @@ class BotViewModel(
     }
 
     private suspend fun update() {
+        _isLoading.value = true
         try {
-            _isLoading.value = true
             _status.value = MirApi.getBotStatus()
-            _isLoading.value = false
         } catch (ex: Exception) {
             uiEvents.emit(UiEvent.ApiError(ex))
+        } finally {
+            _isLoading.value = false
         }
     }
 

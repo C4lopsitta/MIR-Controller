@@ -64,6 +64,7 @@ kotlin {
             implementation(kotlin("reflect"))
             implementation(libs.datastore)
             implementation(libs.datastore.preferences)
+            implementation(libs.materii.pullrefresh)
         }
 
         desktopMain.dependencies {

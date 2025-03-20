@@ -2,13 +2,16 @@
 This app is built with the [Kotlin Multiplatform](https://kotlinlang.org/docs/multiplatform.html) and currently 
 targets *Android* and will have in the future an *iOS* build with desktop builds for *Linux*, *MacOS* and *Windows*.
 
-## Main dependencies:
+## Dependencies:
 - JetBrains Compose
 - Material 3
 - KTOR with CIO Client
 - Serialization (JSON)
 - Datastore
 - Lifecycle Viewmodel
+
+### Other Dependencies
+- [Pull to Refresh Composable](https://github.com/MateriiApps/pullrefresh)
 
 ## Objectives
 - View, create and edit maps and missions on the robot

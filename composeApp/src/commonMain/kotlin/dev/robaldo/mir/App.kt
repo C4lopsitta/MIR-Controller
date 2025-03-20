@@ -52,7 +52,7 @@ fun instantiatePreferences(createPath: () -> String): DataStore<Preferences> =
 fun App(
     colorScheme: ColorScheme,
     uiEvents: MutableSharedFlow<UiEvent> = MutableSharedFlow(),
-    missionsViewModel: BotMissionsViewModel = BotMissionsViewModel(),
+    missionsViewModel: BotMissionsViewModel = BotMissionsViewModel(uiEvents = uiEvents),
     mapsViewModel: BotMapsViewModel = BotMapsViewModel(),
     botViewModel: BotViewModel = BotViewModel(uiEvents = uiEvents)
 ) {
@@ -112,29 +112,18 @@ fun App(
                 modifier = Modifier.padding( paddingValues )
             ) {
                 composable(Routes.HOME) {
-                    Home(
-                        setFab = { fab = it },
-                        botViewModel = botViewModel
-                    )
+                    Home( botViewModel = botViewModel ) { fab = it }
                 }
 
                 composable(Routes.CONTROLLER) { Text("Controller") }
                 composable(Routes.MISSIONS) {
-                    Missions (
-                        snackbarHostState = snackbarHostState,
-                        setFab =  { fab = it }
-                    )
+                    Missions ( missionsViewModel = missionsViewModel ) { fab = it }
                 }
                 composable(Routes.MAPS) {
-                    Maps(
-                        maps = mapsViewModel.maps.value
-                    )
+                    Maps( maps = mapsViewModel.maps.value )
                 }
                 composable(Routes.ROBOT) {
-                    MirBotManagement(
-                        botViewModel = botViewModel,
-                        setFab = { fab = it }
-                    )
+                    MirBotManagement( botViewModel = botViewModel ) { fab = it }
                 }
             }
         }

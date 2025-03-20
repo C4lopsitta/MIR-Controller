@@ -22,8 +22,8 @@ import dev.robaldo.mir.models.view.BotViewModel
 
 @Composable
 fun Home(
-    setFab: @Composable ((@Composable () -> Unit)?) -> Unit,
-    botViewModel: BotViewModel
+    botViewModel: BotViewModel,
+    setFab: @Composable ((@Composable () -> Unit)?) -> Unit
 ) {
     setFab(null)
 
