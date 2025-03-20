@@ -24,11 +24,7 @@ suspend fun caller(
     } catch (ex: Exception) {
         if(log) println(ex.toString())
 
-        snackbarHostState?.showSnackbar(
-            message = ex.message ?: "Undefined Error",
-            withDismissAction = true,
-            duration = SnackbarDuration.Long
-        )
+
     }
     return null
 }

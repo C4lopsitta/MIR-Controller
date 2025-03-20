@@ -29,17 +29,18 @@ import androidx.compose.ui.unit.sp
 import dev.robaldo.mir.enums.BatteryStatus
 import dev.robaldo.mir.enums.BotBadgeStatus
 import dev.robaldo.mir.models.BotStatus
+import dev.robaldo.mir.models.view.BotViewModel
 import dev.robaldo.mir.ui.components.DataPairRow
 import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MirBotManagement(
-    botStatus: BotStatus?,
+    botViewModel: BotViewModel,
     setFab: @Composable ((@Composable () -> Unit)?) -> Unit
 ) {
     val botPercentage by derivedStateOf{
-            BatteryStatus.FromBatteryPercentage(botStatus?.batteryPercentage ?: 0f)
+            BatteryStatus.FromBatteryPercentage(botViewModel.status.value?.batteryPercentage ?: 0f)
     }
 
     setFab(null)
@@ -47,8 +48,8 @@ fun MirBotManagement(
     LazyColumn (
         modifier = Modifier.padding( horizontal = 12.dp )
     ) {
-        if(botStatus != null) {
-            item { Text(botStatus.robotName, style = MaterialTheme.typography.titleLarge) }
+        if(botViewModel.status.value != null) {
+            item { Text(botViewModel.status.value!!.robotName, style = MaterialTheme.typography.titleLarge) }
             item {
                 DataPairRow(
                     labelLeft = "Battery",
@@ -57,7 +58,7 @@ fun MirBotManagement(
                         Row {
                             Icon(botPercentage.toIcon(), contentDescription = null)
                             Text(
-                                "${botStatus.batteryPercentage.roundToInt()}%",
+                                "${botViewModel.status.value!!.batteryPercentage.roundToInt()}%",
                                 fontSize = 24.sp,
                                 fontWeight = FontWeight.SemiBold,
                                 lineHeight = 24.sp
@@ -65,7 +66,7 @@ fun MirBotManagement(
                         }
                     },
                     dataRight = {
-                        Text("${botStatus.uptime}", fontSize = 24.sp, fontWeight = FontWeight.SemiBold)
+                        Text("${botViewModel.status.value!!.uptime}", fontSize = 24.sp, fontWeight = FontWeight.SemiBold)
                     }
                 )
                 HorizontalDivider()
@@ -79,9 +80,9 @@ fun MirBotManagement(
                         Row (
                             horizontalArrangement = Arrangement.spacedBy( 8.dp )
                         ) {
-                            Icon(Icons.Rounded.Circle, contentDescription = null, tint = BotBadgeStatus.fromStatus(botStatus.stateId).toColor())
+                            Icon(Icons.Rounded.Circle, contentDescription = null, tint = BotBadgeStatus.fromStatus(botViewModel.status.value!!.stateId).toColor())
                             Text(
-                                botStatus.stateText,
+                                botViewModel.status.value!!.stateText,
                                 fontSize = 24.sp,
                                 fontWeight = FontWeight.SemiBold,
                                 lineHeight = 24.sp
@@ -89,7 +90,7 @@ fun MirBotManagement(
                         }
                     },
                     dataRight = {
-                        Text(botStatus.modeText, fontSize = 24.sp, fontWeight = FontWeight.SemiBold)
+                        Text(botViewModel.status.value!!.modeText, fontSize = 24.sp, fontWeight = FontWeight.SemiBold)
                     }
                 )
                 HorizontalDivider()
@@ -100,10 +101,10 @@ fun MirBotManagement(
                     labelLeft = "Position",
                     labelRight = "Orientation",
                     dataLeft = {
-                        Text("X: ${String.format("%.3f", botStatus.position.x)}; Y: ${String.format("%.3f", botStatus.position.y)}", fontSize = 24.sp, fontWeight = FontWeight.SemiBold)
+                        Text("X: ${String.format("%.3f", botViewModel.status.value!!.position.x)}; Y: ${String.format("%.3f", botViewModel.status.value!!.position.y)}", fontSize = 24.sp, fontWeight = FontWeight.SemiBold)
                     },
                     dataRight = {
-                        Text("${"%.1f".format(botStatus.position.orientation + 180)} degrees", fontSize = 24.sp, fontWeight = FontWeight.SemiBold)
+                        Text("${"%.1f".format(botViewModel.status.value!!.position.orientation + 180)} degrees", fontSize = 24.sp, fontWeight = FontWeight.SemiBold)
                     }
                 )
                 HorizontalDivider()
@@ -111,30 +112,30 @@ fun MirBotManagement(
                     labelLeft = "Linear Velocity",
                     labelRight = "Angular Velocity",
                     dataLeft = {
-                        Text("${botStatus.velocity.linear}", fontSize = 24.sp, fontWeight = FontWeight.SemiBold)
+                        Text("${botViewModel.status.value!!.velocity.linear}", fontSize = 24.sp, fontWeight = FontWeight.SemiBold)
                     },
                     dataRight = {
-                        Text("${botStatus.velocity.angular}", fontSize = 24.sp, fontWeight = FontWeight.SemiBold)
+                        Text("${botViewModel.status.value!!.velocity.angular}", fontSize = 24.sp, fontWeight = FontWeight.SemiBold)
                     }
                 )
                 HorizontalDivider()
             }
 
-            if(botStatus.errors.isNotEmpty()) {
+            if(botViewModel.status.value!!.errors.isNotEmpty()) {
                 item {
                     Row (
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Icon(Icons.Rounded.Error, contentDescription = "Error", modifier = Modifier.padding( end = 4.dp ))
                         Text(
-                            "Error${if (botStatus.errors.size > 1) "s" else ""}",
+                            "Error${if (botViewModel.status.value!!.errors.size > 1) "s" else ""}",
                             fontSize = 24.sp,
                             fontWeight = FontWeight.SemiBold,
                             modifier = Modifier.padding(vertical = 8.dp)
                         )
                     }
                 }
-                items(botStatus.errors) {
+                items(botViewModel.status.value!!.errors) {
                     Text((it.description ?: "Unknown Error") + " (${it.code})")
                 }
                 item {

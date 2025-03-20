@@ -30,14 +30,15 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import dev.robaldo.mir.definitions.Routes
 import dev.robaldo.mir.enums.BotBadgeStatus
-import dev.robaldo.mir.models.BotStatus
+
 import dev.robaldo.mir.models.NavRoute
+import dev.robaldo.mir.models.view.BotViewModel
 
 
 @Composable
 fun AppNavigationBar(
     navHostController: NavHostController,
-    botStatus: BotStatus?
+    botViewModel: BotViewModel
 ) {
     val navRoutes = listOf(
         NavRoute("Home", Routes.HOME, Icons.Rounded.Home, Icons.Outlined.Home),
@@ -48,7 +49,7 @@ fun AppNavigationBar(
     )
 
     val botBadgeStatus by derivedStateOf {
-        if(botStatus != null) BotBadgeStatus.fromStatus(botStatus.stateId) else BotBadgeStatus.DISCONNECTED
+        if(botViewModel.status.value != null) BotBadgeStatus.fromStatus(botViewModel.status.value!!.stateId) else BotBadgeStatus.DISCONNECTED
     }
 
     BottomAppBar (
@@ -65,7 +66,7 @@ fun AppNavigationBar(
                                         containerColor = botBadgeStatus.toColor(),
                                         content = {
                                             Text(
-                                                "${if ((botStatus?.errors?.size ?: 0) < 10) botStatus?.errors?.size ?: 0 else "9+"}",
+                                                "${if ((botViewModel.status.value?.errors?.size ?: 0) < 10) botViewModel.status.value?.errors?.size ?: 0 else "9+"}",
                                                 fontWeight = FontWeight.SemiBold
                                             )
                                         }
