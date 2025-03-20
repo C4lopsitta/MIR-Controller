@@ -10,13 +10,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Divider
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
-import androidx.compose.material.icons.rounded.Filter
-import androidx.compose.material.icons.rounded.Filter1
-import androidx.compose.material.icons.rounded.FilterAlt
-import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material.icons.rounded.Queue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -25,7 +20,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -38,7 +32,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import dev.robaldo.mir.api.MirApi
-import dev.robaldo.mir.api.caller
 import dev.robaldo.mir.models.responses.get.Item
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -54,9 +47,9 @@ fun Missions(
     var missions by remember { mutableStateOf<List<Item>>(emptyList()) }
 
     LaunchedEffect(Unit) {
-        missions = (caller(snackbarHostState) {
-            MirApi.getMissions()
-        } ?: emptyList<Item>()) as List<Item>
+//        missions = (caller(snackbarHostState) {
+//            MirApi.getMissions()
+//        } ?: emptyList<Item>()) as List<Item>
     }
 
     setFab {

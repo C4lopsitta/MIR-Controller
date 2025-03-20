@@ -5,7 +5,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.robaldo.mir.api.MirApi
-import dev.robaldo.mir.api.caller
 import dev.robaldo.mir.models.responses.get.Item
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -25,14 +24,14 @@ class BotMapsViewModel : ViewModel() {
 
     fun initMaps() {
         viewModelScope.launch {
-            _isLoading.value = true
-            val mapsResult = withContext(Dispatchers.IO) {
-                caller {
-                    MirApi.getMaps()
-                } as List<Item>?
-            }
-            _maps.value = mapsResult ?: emptyList()
-            _isLoading.value = false
+//            _isLoading.value = true
+//            val mapsResult = withContext(Dispatchers.IO) {
+//                caller {
+//                    MirApi.getMaps()
+//                } as List<Item>?
+//            }
+//            _maps.value = mapsResult ?: emptyList()
+//            _isLoading.value = false
         }
     }
 }
