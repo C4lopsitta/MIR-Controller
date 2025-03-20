@@ -19,7 +19,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import dev.robaldo.mir.definitions.Routes
-import dev.robaldo.mir.models.BotStatus
 import dev.robaldo.mir.models.flows.UiEvent
 import dev.robaldo.mir.models.view.BotMapsViewModel
 import dev.robaldo.mir.models.view.BotMissionsViewModel
@@ -31,7 +30,6 @@ import dev.robaldo.mir.ui.routes.Maps
 import dev.robaldo.mir.ui.routes.MirBotManagement
 import dev.robaldo.mir.ui.routes.Missions
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
 import okio.Path.Companion.toPath
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -56,14 +54,10 @@ fun App(
     mapsViewModel: BotMapsViewModel = BotMapsViewModel(),
     botViewModel: BotViewModel = BotViewModel(uiEvents = uiEvents)
 ) {
-    // region app
     val snackbarHostState by remember { mutableStateOf(SnackbarHostState()) }
-    // endregion app
 
-    // region botStatus
 //    var botStatusPollingDelay by remember { mutableStateOf(500L) }
 //    var doAutoUpdateBotStatus by remember { mutableStateOf(true) }
-    // endregion botStatus
 
     val navController = rememberNavController()
     var fab by remember { mutableStateOf<(@Composable () -> Unit)?>(null) }
@@ -120,7 +114,7 @@ fun App(
                     Missions ( missionsViewModel = missionsViewModel ) { fab = it }
                 }
                 composable(Routes.MAPS) {
-                    Maps( maps = mapsViewModel.maps.value )
+                    Maps( mapsViewModel = mapsViewModel )
                 }
                 composable(Routes.ROBOT) {
                     MirBotManagement( botViewModel = botViewModel ) { fab = it }

@@ -5,13 +5,17 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.robaldo.mir.api.MirApi
+import dev.robaldo.mir.models.flows.UiEvent
 import dev.robaldo.mir.models.responses.get.Item
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class BotMapsViewModel : ViewModel() {
+class BotMapsViewModel(
+    private val uiEvents: MutableSharedFlow<UiEvent>
+) : ViewModel() {
     private val _maps = mutableStateOf<List<Item>>(emptyList())
     val maps: State<List<Item>> = _maps
 
@@ -19,19 +23,19 @@ class BotMapsViewModel : ViewModel() {
     val isLoading: State<Boolean> = _isLoading
 
     init {
-        initMaps()
+        update()
     }
 
-    fun initMaps() {
+    fun update() {
         viewModelScope.launch {
-//            _isLoading.value = true
-//            val mapsResult = withContext(Dispatchers.IO) {
-//                caller {
-//                    MirApi.getMaps()
-//                } as List<Item>?
-//            }
-//            _maps.value = mapsResult ?: emptyList()
-//            _isLoading.value = false
+            _isLoading.value = true
+            try {
+                _maps.value = MirApi.getMaps()
+            } catch (ex: Exception) {
+                uiEvents.emit(UiEvent.ApiError(ex))
+            } finally {
+                _isLoading.value = false
+            }
         }
     }
 }
