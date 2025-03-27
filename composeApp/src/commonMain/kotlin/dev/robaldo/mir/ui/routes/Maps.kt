@@ -34,7 +34,7 @@ import dev.robaldo.mir.models.view.BotMapsViewModel
 import dev.robaldo.mir.models.view.BotViewModel
 import kotlin.io.encoding.Base64
 import kotlin.io.encoding.ExperimentalEncodingApi
-import org.jetbrains.skia.Image
+//import org.jetbrains.skia.Image
 
 @OptIn(ExperimentalEncodingApi::class)
 @Composable
@@ -53,20 +53,20 @@ fun Maps(
         if(botViewModel.isLoading.value == true || botViewModel.status.value == null) return@LaunchedEffect
         currentMap = MirApi.getMap(botViewModel.status.value!!.mapId)
     }
-
-    fun decodeBase64PngToImageBitmap(base64String: String): ImageBitmap? {
-        return try {
-            // Decode the Base64 string to a ByteArray
-            val decodedBytes = Base64.decode(base64String, Base64.DEFAULT)
-            // Decode the PNG data to a Bitmap (Android-specific)
-            val bitmap = Image.makeFromEncoded(decodedBytes)
-            // Convert to an ImageBitmap for Compose
-            bitmap?.asImageBitmap()
-        } catch (e: Exception) {
-            e.printStackTrace()
-            null
-        }
-    }
+//
+//    fun decodeBase64PngToImageBitmap(base64String: String): ImageBitmap? {
+//        return try {
+//            // Decode the Base64 string to a ByteArray
+//            val decodedBytes = Base64.decode(base64String, Base64.DEFAULT)
+//            // Decode the PNG data to a Bitmap (Android-specific)
+//            val bitmap = Image.makeFromEncoded(decodedBytes)
+//            // Convert to an ImageBitmap for Compose
+//            bitmap?.asImageBitmap()
+//        } catch (e: Exception) {
+//            e.printStackTrace()
+//            null
+//        }
+//    }
 
 
     PullRefreshLayout(
@@ -91,9 +91,9 @@ fun Maps(
             if(currentMap != null) {
                 item {
                     Text(currentMap!!.name)
-                    Image(
-
-                    )
+//                    Image(
+//
+//                    )
                 }
             }
             item {
