@@ -1,5 +1,8 @@
 package dev.robaldo.mir
 
-actual class Controller {
+actual object Controller {
+    actual fun getGameControllerIds(): List<Int> {
+        TODO("Not yet implemented")
+    }
 
 }

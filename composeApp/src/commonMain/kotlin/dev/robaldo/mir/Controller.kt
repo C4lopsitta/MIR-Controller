@@ -1,5 +1,5 @@
 package dev.robaldo.mir
 
-expect class Controller {
-    fun isControllerConnected(): Boolean
+expect object Controller {
+    fun getGameControllerIds(): List<Int>
 }
