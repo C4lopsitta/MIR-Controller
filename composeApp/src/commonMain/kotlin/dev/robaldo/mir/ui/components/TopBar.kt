@@ -9,12 +9,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import dev.robaldo.mir.enums.BatteryStatus
-import dev.robaldo.mir.models.BotStatus
 import dev.robaldo.mir.models.view.BotViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -24,10 +20,6 @@ fun TopBar(
     botViewModel: BotViewModel,
     actions: @Composable RowScope.() -> Unit = {}
 ) {
-    val botPercentage by derivedStateOf {
-        BatteryStatus.FromBatteryPercentage(botViewModel.status.value?.batteryPercentage ?: 0f)
-    }
-
     TopAppBar(
         title = {
             Column {
@@ -40,7 +32,7 @@ fun TopBar(
         },
         actions = {
             actions()
-            Icon(botPercentage.toIcon(), contentDescription = null, modifier = Modifier.padding( horizontal = 12.dp ))
+            Icon(botViewModel.batteryStatus.value.toIcon(), contentDescription = null, modifier = Modifier.padding( horizontal = 12.dp ))
         }
     )
 }
