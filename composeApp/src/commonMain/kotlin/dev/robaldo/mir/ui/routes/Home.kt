@@ -18,11 +18,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.robaldo.mir.models.BotStatus
+import dev.robaldo.mir.models.view.BotViewModel
 
 @Composable
 fun Home(
-    setFab: @Composable ((@Composable () -> Unit)?) -> Unit,
-    botStatus: BotStatus?
+    botViewModel: BotViewModel,
+    setFab: @Composable ((@Composable () -> Unit)?) -> Unit
 ) {
     setFab(null)
 
@@ -34,13 +35,13 @@ fun Home(
             modifier = Modifier.fillMaxSize()
         ) {
             Icon(
-                if(botStatus == null) Icons.Rounded.WifiTetheringOff else Icons.Rounded.WifiTethering,
+                if(botViewModel.status.value == null) Icons.Rounded.WifiTetheringOff else Icons.Rounded.WifiTethering,
                 contentDescription = "Icon",
                 tint = androidx.compose.material3.MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.width(92.dp).height(92.dp)
             )
             Text(
-                "MiR " + if(botStatus == null) "Disconnected" else "Connected",
+                "MiR " + if(botViewModel.status.value == null) "Disconnected" else "Connected",
                 color = androidx.compose.material3.MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.padding( horizontal = 32.dp, vertical = 12.dp ),
                 fontSize = 24.sp,

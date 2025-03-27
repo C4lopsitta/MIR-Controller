@@ -11,6 +11,11 @@ import androidx.compose.material.icons.rounded.Battery6Bar
 import androidx.compose.material.icons.rounded.BatteryFull
 import androidx.compose.ui.graphics.vector.ImageVector
 
+/**
+ * Enumeration of the battery status, to be used to get the relative icon of the battery.
+ *
+ * @author Robaldo Simone
+ */
 enum class BatteryStatus {
     FULL_7,
     ALMOST_FULL_6,
@@ -21,6 +26,12 @@ enum class BatteryStatus {
     ALMOST_EMPTY_1,
     EMPTY_0;
 
+    /**
+     * Converts the current Enum Value into an [ImageVector] object.
+     *
+     * @return An [ImageVector] battery icon.
+     * @author Simone Robaldo
+     */
     fun toIcon(): ImageVector {
         return when(this) {
             FULL_7 -> Icons.Rounded.BatteryFull
@@ -35,7 +46,13 @@ enum class BatteryStatus {
     }
 
     companion object {
-        fun FromBatteryPercentage(percentage: Float): BatteryStatus {
+        /**
+         * Returns the correct Enum value depending on the given percentage.
+         *
+         * @return A [BatteryStatus] value corresponding to the given percentage.
+         * @author Simone Robaldo
+         */
+        fun fromBatteryPercentage(percentage: Float): BatteryStatus {
             if(percentage >= 95) return FULL_7
             if(percentage >= 80) return ALMOST_FULL_6
             if(percentage >= 65) return ALMOST_MID_FULL_5

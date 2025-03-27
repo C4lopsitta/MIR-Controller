@@ -14,6 +14,7 @@ class BotStatus constructor(
     @SerialName("state_id") val stateId: Int,
     @SerialName("state_text") val stateText: String,
     @SerialName("mode_id") val modeId: Int,
+    @SerialName("map_id") val mapId: String,
     @SerialName("mode_text") val modeText: String,
     @SerialName("position") val position: MirBotPosition,
     @SerialName("velocity") val velocity: MirBotVelocity,

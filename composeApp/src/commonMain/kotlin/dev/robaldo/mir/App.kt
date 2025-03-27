@@ -7,6 +7,7 @@ import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.*
@@ -14,30 +15,21 @@ import androidx.compose.ui.Modifier
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import dev.robaldo.mir.api.MirApi
-import dev.robaldo.mir.api.caller
 import dev.robaldo.mir.definitions.Routes
-import dev.robaldo.mir.enums.BotBadgeStatus
-import dev.robaldo.mir.models.BotStatus
+import dev.robaldo.mir.models.flows.UiEvent
 import dev.robaldo.mir.models.view.BotMapsViewModel
 import dev.robaldo.mir.models.view.BotMissionsViewModel
+import dev.robaldo.mir.models.view.BotViewModel
 import dev.robaldo.mir.ui.components.AppNavigationBar
 import dev.robaldo.mir.ui.components.TopBar
 import dev.robaldo.mir.ui.routes.Home
 import dev.robaldo.mir.ui.routes.Maps
 import dev.robaldo.mir.ui.routes.MirBotManagement
 import dev.robaldo.mir.ui.routes.Missions
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.MutableSharedFlow
 import okio.Path.Companion.toPath
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -57,44 +49,31 @@ fun instantiatePreferences(createPath: () -> String): DataStore<Preferences> =
 @Preview
 fun App(
     colorScheme: ColorScheme,
-    missionsViewModel: BotMissionsViewModel = BotMissionsViewModel(),
-    mapsViewModel: BotMapsViewModel = BotMapsViewModel()
+    uiEvents: MutableSharedFlow<UiEvent> = MutableSharedFlow(),
+    missionsViewModel: BotMissionsViewModel = BotMissionsViewModel(uiEvents = uiEvents),
+    mapsViewModel: BotMapsViewModel = BotMapsViewModel(uiEvents = uiEvents),
+    botViewModel: BotViewModel = BotViewModel(uiEvents = uiEvents)
 ) {
-    // region app
-    val lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
     val snackbarHostState by remember { mutableStateOf(SnackbarHostState()) }
-    var isLoading by remember { mutableStateOf(false) }
-    // endregion app
 
-    // region botStatus
-    var botStatus by remember { mutableStateOf<BotStatus?>(null) }
-    var botStatusPollingDelay by remember { mutableStateOf(500L) }
-    var doAutoUpdateBotStatus by remember { mutableStateOf(true) }
-    var reloadTrigger by remember { mutableStateOf(false) }
-    // endregion botStatus
+//    var botStatusPollingDelay by remember { mutableStateOf(500L) }
+//    var doAutoUpdateBotStatus by remember { mutableStateOf(true) }
 
     val navController = rememberNavController()
     var fab by remember { mutableStateOf<(@Composable () -> Unit)?>(null) }
 
-    suspend fun updateBotStatus() {
-        isLoading = true
-        val status: BotStatus? = caller (snackbarHostState) {
-            MirApi.getBotStatus()
-        } as BotStatus?
-
-        if(status == null) {
-            botStatus = null
-            return
+    LaunchedEffect(uiEvents) {
+        uiEvents.collect { event ->
+            when(event) {
+                is UiEvent.ApiError -> {
+                    snackbarHostState.showSnackbar(
+                        message = event.ex.message ?: "Undefined Error",
+                        withDismissAction = true,
+                        duration = SnackbarDuration.Long
+                    )
+                }
+            }
         }
-
-        botStatus = status
-        isLoading = false
-    }
-
-    LaunchedEffect(key1 = reloadTrigger) {
-        updateBotStatus()
-        delay(botStatusPollingDelay)
-        if(doAutoUpdateBotStatus) reloadTrigger = !reloadTrigger
     }
 
     MaterialTheme (
@@ -104,13 +83,13 @@ fun App(
             bottomBar = {
                 AppNavigationBar(
                     navHostController = navController,
-                    botStatus = botStatus
+                    botViewModel = botViewModel
                 )
             },
             topBar = {
                 TopBar(
                     title = "MIR",
-                    botStatus = botStatus
+                    botViewModel = botViewModel
                 )
             },
             floatingActionButton = fab ?: {},
@@ -127,29 +106,21 @@ fun App(
                 modifier = Modifier.padding( paddingValues )
             ) {
                 composable(Routes.HOME) {
-                    Home(
-                        setFab = { fab = it },
-                        botStatus = botStatus
-                    )
+                    Home( botViewModel = botViewModel ) { fab = it }
                 }
 
                 composable(Routes.CONTROLLER) { Text("Controller") }
                 composable(Routes.MISSIONS) {
-                    Missions (
-                        snackbarHostState = snackbarHostState,
-                        setFab =  { fab = it }
-                    )
+                    Missions ( missionsViewModel = missionsViewModel ) { fab = it }
                 }
                 composable(Routes.MAPS) {
                     Maps(
-                        maps = mapsViewModel.maps.value
+                        mapsViewModel = mapsViewModel,
+                        botViewModel = botViewModel
                     )
                 }
                 composable(Routes.ROBOT) {
-                    MirBotManagement(
-                        botStatus = botStatus,
-                        setFab = { fab = it }
-                    )
+                    MirBotManagement( botViewModel = botViewModel ) { fab = it }
                 }
             }
         }
