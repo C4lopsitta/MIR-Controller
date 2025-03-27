@@ -6,6 +6,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.em
 
+/**
+ * A simple title composable.
+ *
+ * @param text The text to be displayed.
+ * @param modifier The modifier to be applied to the composable.
+ *
+ * @author Simone Robaldo
+ */
 @Composable
 fun Title(text: String, modifier: Modifier = Modifier) {
     Text(

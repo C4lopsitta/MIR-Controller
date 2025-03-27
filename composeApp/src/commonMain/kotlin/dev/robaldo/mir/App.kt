@@ -35,8 +35,28 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 const val preferencesFile = "mir-prefs.preferences_pb"
 
+/**
+ * Expected function to instantiate preferences data store on each platform.
+ *
+ * @return A preferences data store.
+ *
+ * @see storePreferences
+ * @see preferencesFile
+ *
+ * @author Simone Robaldo
+ */
 @Composable expect fun storePreferences(): DataStore<Preferences>
 
+/**
+ * Instantiates a preferences data store.
+ *
+ * @param createPath A lambda that returns the path to the preferences file.
+ *
+ * @see storePreferences
+ * @see preferencesFile
+ *
+ * @return A preferences data store.
+ */
 fun instantiatePreferences(createPath: () -> String): DataStore<Preferences> =
     PreferenceDataStoreFactory.createWithPath(
         produceFile = {
@@ -44,7 +64,27 @@ fun instantiatePreferences(createPath: () -> String): DataStore<Preferences> =
         }
     )
 
-
+/**
+ * CommonMain Entrypoint
+ *
+ * @param colorScheme the app's color scheme, used by Android to set the material you color scheme.
+ * @param uiEvents the flow of UI events. Set by default.
+ * @param missionsViewModel the view model for the missions. Set by default.
+ * @param mapsViewModel the view model for the maps. Set by default.
+ * @param botViewModel the view model for the bot. Set by default.
+ *
+ * @see BotViewModel
+ * @see BotMissionsViewModel
+ * @see BotMapsViewModel
+ * @see AppNavigationBar
+ * @see TopBar
+ * @see Home
+ * @see Maps
+ * @see MirBotManagement
+ * @see Missions
+ *
+ * @author Simone Robaldo
+ */
 @Composable
 @Preview
 fun App(
