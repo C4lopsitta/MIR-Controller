@@ -1,5 +1,6 @@
 package dev.robaldo.mir.api
 
+import dev.robaldo.mir.models.BotMap
 import dev.robaldo.mir.models.BotStatus
 import dev.robaldo.mir.models.requests.post.EnqueueMission
 import dev.robaldo.mir.models.responses.get.Item
@@ -89,5 +90,18 @@ object MirApi {
 
         val json = Json { ignoreUnknownKeys = true }
         return json.decodeFromString<List<Item>>(response.bodyAsText())
+    }
+
+    suspend fun getMap(map: String): BotMap {
+        val response = client.get(Url("http://$mirIp_TEMP$baseUrl/maps/$map")) {
+            headers {
+                append("Authorization", "Basic aXRpc2RlbHBvenpvOjlhZDVhYjA0NDVkZTE4ZDI4Nzg0NjMzNzNkNmRiZGIxZWUzZTFmZjg2YzBhYmY4OGJiMzU5YzNkYzVmMzBiNGQ=")
+            }
+        }
+
+        if(response.status != HttpStatusCode.OK) throw Exception("Could not load map")
+
+        val json = Json { ignoreUnknownKeys = true }
+        return json.decodeFromString<BotMap>(response.bodyAsText())
     }
 }
