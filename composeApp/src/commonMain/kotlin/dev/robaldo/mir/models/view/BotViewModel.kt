@@ -10,10 +10,25 @@ import dev.robaldo.mir.enums.BatteryStatus
 import dev.robaldo.mir.enums.BotBadgeStatus
 import dev.robaldo.mir.models.BotStatus
 import dev.robaldo.mir.models.flows.UiEvent
+import dev.robaldo.mir.models.responses.get.Item
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 
+/**
+ * ViewModel for the Maps data.
+ *
+ * @param uiEvents The MutableSharedFlow of UiEvents.
+ * @property status The stateful value of the robot as a [BotStatus] class instance.
+ * @property batteryStatus The stateful value of the battery as a [BatteryStatus] enumeration value.
+ * @property badge The stateful value of the badge as a [BotBadgeStatus] enumeration value.
+ * @property isLoading The stateful boolean value to be used in the UI to show a loading indicator.
+ * @see dev.robaldo.mir.models.flows.UiEvent
+ * @see BotStatus
+ * @see BatteryStatus
+ * @see BotBadgeStatus
+ * @author Simone Robaldo
+ */
 class BotViewModel(
     private val uiEvents: MutableSharedFlow<UiEvent>,
 ): ViewModel() {
@@ -39,6 +54,11 @@ class BotViewModel(
         polling()
     }
 
+    /**
+     * Fetches the data asynchronously from the [MirApi] and stores it in the ViewModel.
+     *
+     * @author Simone Robaldo
+     */
     private suspend fun update() {
         _isLoading.value = true
         try {
@@ -50,6 +70,11 @@ class BotViewModel(
         }
     }
 
+    /**
+     * Indefinitely polls the API every 500ms and updates the ViewModel.
+     *
+     * @author Simone Robaldo
+     */
     private fun polling() {
         viewModelScope.launch {
             update()

@@ -3,9 +3,31 @@ package dev.robaldo.mir.models
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
+/**
+ * A Detailed Map data class returned by the [dev.robaldo.mir.api.MirApi].
+ *
+ * Contains more details compared to a [dev.robaldo.mir.models.responses.get.Item] instance. Includes also a Base64 encoded Map PNG.
+ *
+ * @property base64Map The Base64 encoded Map PNG.
+ * @property positions TODO Define
+ * @property name The name of the map.
+ * @property paths TODO Define
+ * @property oneWayMap TODO Define
+ * @property createdByName The name of the user who created the map.
+ * @property createdBy The ID of the user who created the map.
+ * @property createdById The ID of the user who created the map.
+ * @property sessionId TODO Define
+ * @property originTheta TODO Define
+ * @property originX TODO Define
+ * @property originY TODO Define
+ * @property pathGuides TODO Define
+ * @property guid The ID of the map.
+ * @property resolution TODO Define
+ * @property metadata TODO Define Base64 data tho
+ */
 @Serializable
 data class BotMap(
-    @SerialName("map") val map: String,
+    @SerialName("map") val base64Map: String,
     @SerialName("positions") val positions: String,
     @SerialName("name") val name: String,
     @SerialName("paths") val paths: String,

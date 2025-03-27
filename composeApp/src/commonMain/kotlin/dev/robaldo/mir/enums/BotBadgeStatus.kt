@@ -18,6 +18,15 @@ enum class BotBadgeStatus {
     ERROR,
     EMERGENCY_STOP;
 
+    /**
+     * Returns the corresponding color value of the status to be used with a Badge.
+     *
+     * @see androidx.compose.material3.Badge
+     * @see dev.robaldo.mir.ui.components.AppNavigationBar
+     * @see dev.robaldo.mir.ui.routes.MirBotManagement
+     *
+     * @author Simone Robaldo
+     */
     @Composable
     fun toColor(): Color {
         return when(this) {
@@ -36,6 +45,7 @@ enum class BotBadgeStatus {
          * Returns the corresponding enumeration value of the given integer.
          *
          * @param status The integer value of the status.
+         * @author Simone Robaldo
          */
         fun fromStatus(status: Int): BotBadgeStatus {
             return when (status) {
