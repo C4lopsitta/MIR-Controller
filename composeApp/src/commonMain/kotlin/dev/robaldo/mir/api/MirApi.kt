@@ -19,9 +19,26 @@ import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 
+/**
+ * Object used to interface with the MiR 100 Robot.
+ *
+ * @property TOKEN_TEMP Is a temporary, to be replaced, token value.
+ * @property MIR_ROBOT_IP_TEMP Is a temporary, to be replaced, IP value, corresponding to the Robot's IP
+ * @property BASE_URL The base URL of the API. Set to `/api/v2.0.0`
+ * @sample dev.robaldo.mir.docSamples.MirApiSample
+ * @author Robaldo Simone
+ */
 object MirApi {
-    private const val baseUrl = "/api/v2.0.0"
-    private const val mirIp_TEMP = "192.168.12.20"
+    // This token is a temporary value that will be replaced with a calculated one with task "Token and Authorization"
+    private const val TOKEN_TEMP =
+        "Basic aXRpc2RlbHBvenpvOjlhZDVhYjA0NDVkZTE4ZDI4Nzg0NjMzNzNkNmRiZGIxZWUzZTFmZjg2YzBhYmY4OGJiMzU5YzNkYzVmMzBiNGQ="
+    private const val MIR_ROBOT_IP_TEMP = "192.168.12.20"
+
+    private const val BASE_URL = "/api/v2.0.0"
+
+    /**
+     * Definition of the HTTP Client with JSON Serialization and ContentNegotiation Support.
+     */
     private val client = HttpClient(CIO) {
         install(ContentNegotiation) {
             json()
@@ -37,52 +54,76 @@ object MirApi {
         return ""
     }
 
-
+    /**
+     * Fetches basic Mission information and returns them in a list of [Item] objects.
+     *
+     * @throws Exception If the request fails.
+     * @return A list of [Item] objects.
+     * @author Simone Robaldo
+     */
     suspend fun getMissions(): List<Item> {
-        val response = client.get(Url("http://$mirIp_TEMP$baseUrl/missions")) {
+        val response = client.get(Url("http://$MIR_ROBOT_IP_TEMP$BASE_URL/missions")) {
             headers {
-                append("Authorization", "Basic aXRpc2RlbHBvenpvOjlhZDVhYjA0NDVkZTE4ZDI4Nzg0NjMzNzNkNmRiZGIxZWUzZTFmZjg2YzBhYmY4OGJiMzU5YzNkYzVmMzBiNGQ=")
+                append("Authorization", TOKEN_TEMP)
             }
         }
-        println(response.bodyAsText())
+
         val missions = Json.decodeFromString<List<Item>>(response.bodyAsText())
         return missions
     }
 
 
+    /**
+     * Adds the given Mission [Item] to the Queue of the MiR 100 robot.
+     *
+     * @param mission The mission to add to the queue.
+     * @throws Exception If the request fails.
+     * @return A [Boolean] value indicating if the request was successful.
+     * @author Simone Robaldo
+     */
     suspend fun addMissionToQueue(mission: Item): Boolean {
-        val response = client.post(Url("http://$mirIp_TEMP$baseUrl/mission_queue")) {
+        val response = client.post(Url("http://$MIR_ROBOT_IP_TEMP$BASE_URL/mission_queue")) {
             headers {
-                append("Authorization", "Basic aXRpc2RlbHBvenpvOjlhZDVhYjA0NDVkZTE4ZDI4Nzg0NjMzNzNkNmRiZGIxZWUzZTFmZjg2YzBhYmY4OGJiMzU5YzNkYzVmMzBiNGQ=")
+                append("Authorization", TOKEN_TEMP)
             }
             contentType(ContentType.Application.Json)
             setBody( EnqueueMission(mission.guid) )
         }
 
-        println(response.bodyAsText())
-
         return response.status == HttpStatusCode.Created
     }
 
+    /**
+     * Fetches the current status of the MiR 100 robot.
+     *
+     * @throws Exception If the request fails.
+     * @return A [BotStatus] object, null when the status of the response wasn't successful. The [BotStatus] object is intended to be used inside the [dev.robaldo.mir.models.view.BotViewModel]
+     * @author Simone Robaldo
+     */
     suspend fun getBotStatus(): BotStatus? {
-        val response = client.get(Url("http://$mirIp_TEMP$baseUrl/status")) {
+        val response = client.get(Url("http://$MIR_ROBOT_IP_TEMP$BASE_URL/status")) {
             headers {
-                append("Authorization", "Basic aXRpc2RlbHBvenpvOjlhZDVhYjA0NDVkZTE4ZDI4Nzg0NjMzNzNkNmRiZGIxZWUzZTFmZjg2YzBhYmY4OGJiMzU5YzNkYzVmMzBiNGQ=")
+                append("Authorization", TOKEN_TEMP)
             }
         }
 
         if(response.status != HttpStatusCode.OK) return null
 
-        println(response.bodyAsText())
-
         val json = Json { ignoreUnknownKeys = true }
         return json.decodeFromString<BotStatus>(response.bodyAsText())
     }
 
+    /**
+     * Fetches the maps stored on the MiR 100 Robot and returns them.
+     *
+     * @throws Exception If the request fails.
+     * @return A List of [Item]s containing basic information about the maps.
+     * @author Simone Robaldo
+     */
     suspend fun getMaps(): List<Item> {
-        val response = client.get(Url("http://$mirIp_TEMP$baseUrl/maps")) {
+        val response = client.get(Url("http://$MIR_ROBOT_IP_TEMP$BASE_URL/maps")) {
             headers {
-                append("Authorization", "Basic aXRpc2RlbHBvenpvOjlhZDVhYjA0NDVkZTE4ZDI4Nzg0NjMzNzNkNmRiZGIxZWUzZTFmZjg2YzBhYmY4OGJiMzU5YzNkYzVmMzBiNGQ=")
+                append("Authorization", TOKEN_TEMP)
             }
         }
 
@@ -92,10 +133,18 @@ object MirApi {
         return json.decodeFromString<List<Item>>(response.bodyAsText())
     }
 
+    /**
+     * Fetches an individual map from the MiR 100 Robot.
+     *
+     * @param map The Map GUID to fetch. Usually stored inside an [Item] returned by the [MirApi.getMaps] method.
+     * @throws Exception If the request fails.
+     * @return A [BotMap] object containing more details about the Map.
+     * @author Simone Robaldo
+     */
     suspend fun getMap(map: String): BotMap {
-        val response = client.get(Url("http://$mirIp_TEMP$baseUrl/maps/$map")) {
+        val response = client.get(Url("http://$MIR_ROBOT_IP_TEMP$BASE_URL/maps/$map")) {
             headers {
-                append("Authorization", "Basic aXRpc2RlbHBvenpvOjlhZDVhYjA0NDVkZTE4ZDI4Nzg0NjMzNzNkNmRiZGIxZWUzZTFmZjg2YzBhYmY4OGJiMzU5YzNkYzVmMzBiNGQ=")
+                append("Authorization", TOKEN_TEMP)
             }
         }
 

@@ -21,7 +21,7 @@ class BotViewModel(
     val status: State<BotStatus?> = _status
 
     val batteryStatus = derivedStateOf {
-        if(_status.value != null) BatteryStatus.FromBatteryPercentage(_status.value!!.batteryPercentage) else BatteryStatus.EMPTY_0
+        if(_status.value != null) BatteryStatus.fromBatteryPercentage(_status.value!!.batteryPercentage) else BatteryStatus.EMPTY_0
     }
 
     val badge: State<BotBadgeStatus> = derivedStateOf {

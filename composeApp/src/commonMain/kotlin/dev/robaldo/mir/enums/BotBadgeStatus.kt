@@ -4,6 +4,11 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
+/**
+ * An enum value corresponding to the status of the MiR 100 robot.
+ *
+ * @author Simone Robaldo
+ */
 enum class BotBadgeStatus {
     DISCONNECTED,
     READY,
@@ -27,6 +32,11 @@ enum class BotBadgeStatus {
     }
 
     companion object {
+        /**
+         * Returns the corresponding enumeration value of the given integer.
+         *
+         * @param status The integer value of the status.
+         */
         fun fromStatus(status: Int): BotBadgeStatus {
             return when (status) {
                 3 -> READY
