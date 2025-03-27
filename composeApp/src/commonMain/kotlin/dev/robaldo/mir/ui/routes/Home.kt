@@ -17,9 +17,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import dev.robaldo.mir.models.BotStatus
 import dev.robaldo.mir.models.view.BotViewModel
 
+/**
+ * The Home route composable body.
+ *
+ * @param botViewModel The view model for the bot.
+ * @param setFab The function to set the floating action button.
+ *
+ * @see BotViewModel
+ *
+ * @author Simone Robaldo
+ */
 @Composable
 fun Home(
     botViewModel: BotViewModel,

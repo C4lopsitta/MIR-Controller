@@ -33,6 +33,14 @@ import dev.robaldo.mir.models.NavRoute
 import dev.robaldo.mir.models.view.BotViewModel
 
 
+/**
+ * The app's navigation bar.
+ *
+ * @param navHostController The navigation controller
+ * @param botViewModel An instance of the [BotViewModel] class to be used to display a badge on the bottom navigation bar.
+ *
+ * @author Simone Robaldo
+ */
 @Composable
 fun AppNavigationBar(
     navHostController: NavHostController,

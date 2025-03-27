@@ -2,7 +2,6 @@ package dev.robaldo.mir.ui.routes
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -11,29 +10,31 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Circle
 import androidx.compose.material.icons.rounded.Error
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import dev.robaldo.mir.enums.BatteryStatus
-import dev.robaldo.mir.enums.BotBadgeStatus
-import dev.robaldo.mir.models.BotStatus
 import dev.robaldo.mir.models.view.BotViewModel
 import dev.robaldo.mir.ui.components.DataPairRow
 import kotlin.math.roundToInt
 
-@OptIn(ExperimentalMaterial3Api::class)
+/**
+ * The composable that displays the bot management options.
+ *
+ * @param botViewModel The view model for the bot.
+ * @param setFab The function to set the floating action button.
+ *
+ * @see BotViewModel
+ * @see DataPairRow
+ *
+ * @author Simone Robaldo
+ */
 @Composable
 fun MirBotManagement(
     botViewModel: BotViewModel,

@@ -13,6 +13,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import dev.robaldo.mir.models.view.BotViewModel
 
+/**
+ * The app's top bar
+ *
+ * @param title The title of the app
+ * @param botViewModel An instance of the [BotViewModel] class to be used to display the Battery Percentage Icon
+ * @param actions The actions to be displayed on the right side of the top bar
+ *
+ * @author Simone Robaldo
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBar(

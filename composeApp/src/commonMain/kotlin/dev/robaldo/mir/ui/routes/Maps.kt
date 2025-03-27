@@ -1,6 +1,5 @@
 package dev.robaldo.mir.ui.routes
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -21,7 +20,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import dev.materii.pullrefresh.PullRefreshIndicator
@@ -29,14 +27,20 @@ import dev.materii.pullrefresh.PullRefreshLayout
 import dev.materii.pullrefresh.rememberPullRefreshState
 import dev.robaldo.mir.api.MirApi
 import dev.robaldo.mir.models.BotMap
-import dev.robaldo.mir.models.responses.get.Item
 import dev.robaldo.mir.models.view.BotMapsViewModel
 import dev.robaldo.mir.models.view.BotViewModel
-import kotlin.io.encoding.Base64
-import kotlin.io.encoding.ExperimentalEncodingApi
-//import org.jetbrains.skia.Image
 
-@OptIn(ExperimentalEncodingApi::class)
+/**
+ * The Maps route composable body.
+ *
+ * @param mapsViewModel The view model for the maps.
+ * @param botViewModel The view model for the bot.
+ *
+ * @see BotMapsViewModel
+ * @see BotViewModel
+ *
+ * @author Simone Robaldo
+ */
 @Composable
 fun Maps(
     mapsViewModel: BotMapsViewModel,
