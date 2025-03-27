@@ -7,11 +7,8 @@ import androidx.lifecycle.viewModelScope
 import dev.robaldo.mir.api.MirApi
 import dev.robaldo.mir.models.flows.UiEvent
 import dev.robaldo.mir.models.responses.get.Item
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class BotMapsViewModel(
     private val uiEvents: MutableSharedFlow<UiEvent>
