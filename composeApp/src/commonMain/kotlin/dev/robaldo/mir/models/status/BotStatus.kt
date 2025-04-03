@@ -1,6 +1,6 @@
-package dev.robaldo.mir.models
+package dev.robaldo.mir.models.status
 
-import androidx.lifecycle.ViewModel
+import dev.robaldo.mir.models.BotError
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 

@@ -1,4 +1,4 @@
-package dev.robaldo.mir.models
+package dev.robaldo.mir.models.status
 
 import kotlinx.serialization.Serializable
 

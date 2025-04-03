@@ -79,12 +79,12 @@ fun Maps(
         indicator = {
             PullRefreshIndicator(
                 state = refreshState,
-                modifier = Modifier.zIndex(2f)
+                modifier = Modifier.zIndex(1f)
             )
         }
     ) {
         LazyColumn (
-            modifier = Modifier.padding(12.dp)
+            modifier = Modifier.padding(12.dp).zIndex(-1f)
         ) {
             item {
                 Text(

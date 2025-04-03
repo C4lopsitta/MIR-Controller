@@ -1,9 +1,9 @@
 package dev.robaldo.mir.api
 
-import dev.robaldo.mir.models.BotAction
+import dev.robaldo.mir.models.missions.BotMissionAction
 import dev.robaldo.mir.models.BotMap
-import dev.robaldo.mir.models.BotMission
-import dev.robaldo.mir.models.BotStatus
+import dev.robaldo.mir.models.missions.BotMission
+import dev.robaldo.mir.models.status.BotStatus
 import dev.robaldo.mir.models.requests.post.EnqueueMission
 import dev.robaldo.mir.models.responses.get.Item
 import io.ktor.client.HttpClient
@@ -86,7 +86,7 @@ object MirApi {
         return json.decodeFromString<BotMission>(response.bodyAsText())
     }
 
-    suspend fun getMissionActions(missionData: BotMission): List<BotAction> {
+    suspend fun getMissionActions(missionData: BotMission): List<BotMissionAction> {
         val response = client.get(Url("http://$MIR_ROBOT_IP_TEMP/api${missionData.actionsUrl}")) {
             headers {
                 append("Authorization", TOKEN_TEMP)
@@ -97,7 +97,7 @@ object MirApi {
 
         val json = Json { ignoreUnknownKeys = true }
         println(response.bodyAsText())
-        return json.decodeFromString<List<BotAction>>(response.bodyAsText())
+        return json.decodeFromString<List<BotMissionAction>>(response.bodyAsText())
     }
 
     /**

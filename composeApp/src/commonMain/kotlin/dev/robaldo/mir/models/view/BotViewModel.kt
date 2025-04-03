@@ -8,9 +8,8 @@ import androidx.lifecycle.viewModelScope
 import dev.robaldo.mir.api.MirApi
 import dev.robaldo.mir.enums.BatteryStatus
 import dev.robaldo.mir.enums.BotBadgeStatus
-import dev.robaldo.mir.models.BotStatus
 import dev.robaldo.mir.models.flows.UiEvent
-import dev.robaldo.mir.models.responses.get.Item
+import dev.robaldo.mir.models.status.BotStatus
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch

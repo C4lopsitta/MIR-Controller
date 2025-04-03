@@ -26,7 +26,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
+import androidx.compose.ui.zIndex
 import androidx.navigation.NavHostController
+import dev.materii.pullrefresh.PullRefreshIndicator
 import dev.materii.pullrefresh.PullRefreshLayout
 import dev.materii.pullrefresh.rememberPullRefreshState
 import dev.robaldo.mir.api.MirApi
@@ -52,15 +54,23 @@ fun Missions(
     navController: NavHostController,
     missionsViewModel: BotMissionsViewModel,
 ) {
+    val refreshState = rememberPullRefreshState(
+        refreshing = missionsViewModel.isLoading.value,
+        onRefresh = { missionsViewModel.update() }
+    )
+
     PullRefreshLayout(
-        state = rememberPullRefreshState(
-            refreshing = missionsViewModel.isLoading.value,
-            onRefresh = { missionsViewModel.update() }
-        ),
-        modifier = Modifier.fillMaxSize()
+        state = refreshState,
+        modifier = Modifier.fillMaxSize(),
+        indicator = {
+            PullRefreshIndicator(
+                state = refreshState,
+                modifier = Modifier.zIndex(1f)
+            )
+        }
     ) {
         LazyColumn(
-            modifier = Modifier.fillMaxSize().padding(12.dp)
+            modifier = Modifier.fillMaxSize().padding(12.dp).zIndex(-1f)
         ) {
             items(missionsViewModel.missions.value) {
                 ListItem(

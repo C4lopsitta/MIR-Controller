@@ -32,11 +32,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import dev.robaldo.mir.api.MirApi
-import dev.robaldo.mir.models.BotAction
-import dev.robaldo.mir.models.BotMission
+import dev.robaldo.mir.models.missions.BotMissionAction
+import dev.robaldo.mir.models.missions.BotMission
 import dev.robaldo.mir.models.flows.UiEvent
-import dev.robaldo.mir.models.responses.get.Item
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 
 /**
@@ -58,7 +56,7 @@ fun MissionsEditor(
     setFab: @Composable (@Composable () -> Unit) -> Unit
 ) {
     var missionData by remember { mutableStateOf<BotMission?>(null) }
-    var actionsList by remember { mutableStateOf<List<BotAction>>(emptyList()) }
+    var actionsList by remember { mutableStateOf<List<BotMissionAction>>(emptyList()) }
     var showActionPickerSheet by remember { mutableStateOf(false) }
     var loadingProgress by remember { mutableStateOf(-0.1f) }
 

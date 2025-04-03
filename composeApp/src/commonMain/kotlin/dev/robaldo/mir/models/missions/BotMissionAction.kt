@@ -1,10 +1,10 @@
-package dev.robaldo.mir.models
+package dev.robaldo.mir.models.missions
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class BotAction(
+data class BotMissionAction(
     val guid: String,
     @SerialName("created_by_id") val createdById: String? = null,
     @SerialName("action_type") val actionType: String,
