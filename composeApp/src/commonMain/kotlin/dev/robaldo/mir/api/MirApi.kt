@@ -50,6 +50,14 @@ object MirApi {
         }
     }
 
+    /**
+     * Generate the HTTP auth bearer using base64 encoding and SHA256
+     * @param username The username to access the robot
+     * @param password The password to access the robot
+     * @return A [String] of the bearer
+     *
+     * @author Marco Garro
+     */
     @OptIn(ExperimentalEncodingApi::class)
     private fun generateAuthToken(
         username: String,
