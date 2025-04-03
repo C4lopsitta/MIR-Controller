@@ -5,6 +5,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dev.robaldo.mir.Controller
 import dev.robaldo.mir.api.MirApi
 import dev.robaldo.mir.enums.BatteryStatus
 import dev.robaldo.mir.enums.BotBadgeStatus
@@ -53,6 +54,8 @@ class BotViewModel(
     private fun polling() {
         viewModelScope.launch {
             update()
+            println(Controller.getGameControllerIds())
+            println(Controller.getLeftJoystickValues())
             delay(500L)
             polling()
         }
