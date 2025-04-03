@@ -1,6 +1,8 @@
 package dev.robaldo.mir.api
 
+import dev.robaldo.mir.models.BotAction
 import dev.robaldo.mir.models.BotMap
+import dev.robaldo.mir.models.BotMission
 import dev.robaldo.mir.models.BotStatus
 import dev.robaldo.mir.models.requests.post.EnqueueMission
 import dev.robaldo.mir.models.responses.get.Item
@@ -72,6 +74,31 @@ object MirApi {
         return missions
     }
 
+    suspend fun getMission(guid: String): BotMission {
+        val response = client.get(Url("http://$MIR_ROBOT_IP_TEMP$BASE_URL/missions/$guid")) {
+            headers {
+                append("Authorization", TOKEN_TEMP)
+            }
+        }
+
+        if(response.status != HttpStatusCode.OK) throw Exception(response.bodyAsText())
+        val json = Json { ignoreUnknownKeys = true }
+        return json.decodeFromString<BotMission>(response.bodyAsText())
+    }
+
+    suspend fun getMissionActions(missionData: BotMission): List<BotAction> {
+        val response = client.get(Url("http://$MIR_ROBOT_IP_TEMP/api${missionData.actionsUrl}")) {
+            headers {
+                append("Authorization", TOKEN_TEMP)
+            }
+        }
+
+        if(response.status != HttpStatusCode.OK) throw Exception(response.bodyAsText())
+
+        val json = Json { ignoreUnknownKeys = true }
+        println(response.bodyAsText())
+        return json.decodeFromString<List<BotAction>>(response.bodyAsText())
+    }
 
     /**
      * Adds the given Mission [Item] to the Queue of the MiR 100 robot.

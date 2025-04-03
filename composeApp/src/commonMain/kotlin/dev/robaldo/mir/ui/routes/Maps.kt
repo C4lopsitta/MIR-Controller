@@ -54,7 +54,7 @@ fun Maps(
     var currentMap by remember { mutableStateOf<BotMap?>(null) }
 
     LaunchedEffect(botViewModel.isLoading.value) {
-        if(botViewModel.isLoading.value == true || botViewModel.status.value == null) return@LaunchedEffect
+        if(botViewModel.isLoading.value || botViewModel.status.value == null) return@LaunchedEffect
         currentMap = MirApi.getMap(botViewModel.status.value!!.mapId)
     }
 //
