@@ -36,6 +36,8 @@ import dev.robaldo.mir.ui.routes.Maps
 import dev.robaldo.mir.ui.routes.MirBotManagement
 import dev.robaldo.mir.ui.routes.Missions
 import dev.robaldo.mir.ui.routes.MissionsEditor
+import io.ktor.client.network.sockets.ConnectTimeoutException
+import io.ktor.client.plugins.HttpRequestTimeoutException
 import kotlinx.coroutines.flow.MutableSharedFlow
 import okio.Path.Companion.toPath
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -114,11 +116,14 @@ fun App(
         uiEvents.collect { event ->
             when(event) {
                 is UiEvent.ApiError -> {
-                    snackbarHostState.showSnackbar(
-                        message = event.ex.message ?: "Undefined Error",
-                        withDismissAction = true,
-                        duration = SnackbarDuration.Long
-                    )
+                    // Filter out timeouts as they happen when the MiR bot is disconnected
+                    if(event.ex !is HttpRequestTimeoutException && event.ex !is ConnectTimeoutException) {
+                        snackbarHostState.showSnackbar(
+                            message = event.ex.message ?: "Undefined Error",
+                            withDismissAction = true,
+                            duration = SnackbarDuration.Long
+                        )
+                    }
                 }
             }
         }
