@@ -43,7 +43,7 @@ import kotlinx.coroutines.launch
  * The Missions route composable body.
  *
  * @param missionsViewModel The view model for the missions.
- * @param setFab The function to set the floating action button.
+ * @param navController The Application's [NavHostController]
  *
  * @see BotMissionsViewModel
  *

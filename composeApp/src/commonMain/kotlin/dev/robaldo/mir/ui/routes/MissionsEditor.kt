@@ -43,6 +43,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
  * @param navController The Application's [NavHostController]
  * @param guid The mission's GUID
  * @param uiEvents The Shared Flow to manage API Exceptions
+ * @param setFab The function to set the [FloatingActionButton]
  *
  * @see [dev.robaldo.mir.models.responses.get.Item]
  * @see [UiEvent]
