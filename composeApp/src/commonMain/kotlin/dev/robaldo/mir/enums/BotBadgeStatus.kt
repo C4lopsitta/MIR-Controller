@@ -3,6 +3,8 @@ package dev.robaldo.mir.enums
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import com.zakgof.korender.math.ColorRGB
+import com.zakgof.korender.math.ColorRGBA
 
 /**
  * An enum value corresponding to the status of the MiR 100 robot.
@@ -37,6 +39,18 @@ enum class BotBadgeStatus {
             MANUAL_CONTROL -> Color.Blue
             ERROR -> Color.Red
             EMERGENCY_STOP -> Color.Red
+        }
+    }
+
+    fun toModelColor(): ColorRGB {
+        return when(this) {
+            DISCONNECTED -> ColorRGB(1f, 0f, 0f)
+            READY -> ColorRGB.Green
+            PAUSED -> ColorRGB(1f, 0.75f, 0f)
+            EXECUTING -> ColorRGB(0.8f, 0.1f, 0.7f)
+            MANUAL_CONTROL -> ColorRGB.Blue
+            ERROR -> ColorRGB.Red
+            EMERGENCY_STOP -> ColorRGB.Red
         }
     }
 
