@@ -1,9 +1,12 @@
 package dev.robaldo.mir.api
 
+import dev.robaldo.mir.models.missions.BotMissionAction
 import dev.robaldo.mir.models.BotMap
-import dev.robaldo.mir.models.BotStatus
+import dev.robaldo.mir.models.missions.BotMission
+import dev.robaldo.mir.models.status.BotStatus
 import dev.robaldo.mir.models.requests.post.EnqueueMission
 import dev.robaldo.mir.models.responses.get.Item
+import dev.robaldo.mir.Log
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -85,10 +88,39 @@ object MirApi {
             }
         }
 
+        Log.d("MirApi.getMissions()", response.bodyAsText())
+
         val missions = Json.decodeFromString<List<Item>>(response.bodyAsText())
         return missions
     }
 
+    suspend fun getMission(guid: String): BotMission {
+        val response = client.get(Url("http://$MIR_ROBOT_IP_TEMP$BASE_URL/missions/$guid")) {
+            headers {
+                append("Authorization", TOKEN_TEMP)
+            }
+        }
+
+        Log.d("MirApi.getMission()", response.bodyAsText())
+        if(response.status != HttpStatusCode.OK) throw Exception(response.bodyAsText())
+        val json = Json { ignoreUnknownKeys = true }
+        return json.decodeFromString<BotMission>(response.bodyAsText())
+    }
+
+    suspend fun getMissionActions(missionData: BotMission): List<BotMissionAction> {
+        val response = client.get(Url("http://$MIR_ROBOT_IP_TEMP/api${missionData.actionsUrl}")) {
+            headers {
+                append("Authorization", TOKEN_TEMP)
+            }
+        }
+
+        Log.d("MirApi.getMissionActions()", response.bodyAsText())
+        if(response.status != HttpStatusCode.OK) throw Exception(response.bodyAsText())
+
+        val json = Json { ignoreUnknownKeys = true }
+        println(response.bodyAsText())
+        return json.decodeFromString<List<BotMissionAction>>(response.bodyAsText())
+    }
 
     /**
      * Adds the given Mission [Item] to the Queue of the MiR 100 robot.
@@ -124,8 +156,9 @@ object MirApi {
             }
         }
 
-        if(response.status != HttpStatusCode.OK) return null
+        Log.d("MirApi.getBotStatus()", response.bodyAsText())
 
+        if(response.status != HttpStatusCode.OK) return null
         val json = Json { ignoreUnknownKeys = true }
         return json.decodeFromString<BotStatus>(response.bodyAsText())
     }
@@ -143,6 +176,8 @@ object MirApi {
                 append("Authorization", TOKEN_TEMP)
             }
         }
+
+        Log.d("MirApi.getMaps()", response.bodyAsText())
 
         if(response.status != HttpStatusCode.OK) return emptyList()
 
@@ -164,6 +199,8 @@ object MirApi {
                 append("Authorization", TOKEN_TEMP)
             }
         }
+
+        Log.d("MirApi.getMap()", response.bodyAsText())
 
         if(response.status != HttpStatusCode.OK) throw Exception("Could not load map")
 

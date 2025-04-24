@@ -20,17 +20,17 @@ kotlin {
             jvmTarget.set(JvmTarget.JVM_17)
         }
     }
-    
-    listOf(
-        iosX64(),
-        iosArm64(),
-        iosSimulatorArm64()
-    ).forEach { iosTarget ->
-        iosTarget.binaries.framework {
-            baseName = "ComposeApp"
-            isStatic = true
-        }
-    }
+//
+//    listOf(
+//        iosX64(),
+//        iosArm64(),
+//        iosSimulatorArm64()
+//    ).forEach { iosTarget ->
+//        iosTarget.binaries.framework {
+//            baseName = "ComposeApp"
+//            isStatic = true
+//        }
+//    }
     
     jvm("desktop")
     
@@ -66,6 +66,8 @@ kotlin {
             implementation(libs.datastore)
             implementation(libs.datastore.preferences)
             implementation(libs.materii.pullrefresh)
+            // 3D Renderer
+            implementation(libs.korender)
             implementation(platform("org.kotlincrypto.hash:bom:0.7.0"))
             implementation("org.kotlincrypto.hash:sha2")
         }

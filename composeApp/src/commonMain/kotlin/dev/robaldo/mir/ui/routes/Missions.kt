@@ -12,11 +12,13 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.Queue
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.ListItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -24,9 +26,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
+import androidx.compose.ui.zIndex
+import androidx.navigation.NavHostController
+import dev.materii.pullrefresh.PullRefreshIndicator
 import dev.materii.pullrefresh.PullRefreshLayout
 import dev.materii.pullrefresh.rememberPullRefreshState
 import dev.robaldo.mir.api.MirApi
+import dev.robaldo.mir.models.responses.get.Item
 import dev.robaldo.mir.models.view.BotMissionsViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -37,7 +43,7 @@ import kotlinx.coroutines.launch
  * The Missions route composable body.
  *
  * @param missionsViewModel The view model for the missions.
- * @param setFab The function to set the floating action button.
+ * @param navController The Application's [NavHostController]
  *
  * @see BotMissionsViewModel
  *
@@ -45,55 +51,64 @@ import kotlinx.coroutines.launch
  */
 @Composable
 fun Missions(
+    navController: NavHostController,
     missionsViewModel: BotMissionsViewModel,
-    setFab: @Composable (@Composable () -> Unit) -> Unit
 ) {
-    setFab {
-        FloatingActionButton(
-            content = { Icon(Icons.Rounded.Add, contentDescription = "Add Mission") },
-            onClick = {
-
-            }
-        )
-    }
+    val refreshState = rememberPullRefreshState(
+        refreshing = missionsViewModel.isLoading.value,
+        onRefresh = { missionsViewModel.update() }
+    )
 
     PullRefreshLayout(
-        state = rememberPullRefreshState(
-            refreshing = missionsViewModel.isLoading.value,
-            onRefresh = { missionsViewModel.update() }
-        ),
-        modifier = Modifier.fillMaxSize()
+        state = refreshState,
+        modifier = Modifier.fillMaxSize(),
+        indicator = {
+            PullRefreshIndicator(
+                state = refreshState,
+                modifier = Modifier.zIndex(1f)
+            )
+        }
     ) {
         LazyColumn(
-            modifier = Modifier.fillMaxSize().padding(12.dp)
+            modifier = Modifier.fillMaxSize().padding(12.dp).zIndex(-1f)
         ) {
             items(missionsViewModel.missions.value) {
-                Row(
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(vertical = 12.dp).fillMaxWidth()
-                ) {
-                    Column(
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.Start
-                    ) {
-                        Text(it.name, fontSize = 3.em, fontWeight = if(it.name.contains("suono", ignoreCase = true)) FontWeight.Bold else FontWeight.Normal)
-                        Text(it.guid, fontSize = 2.em)
-                    }
-                    IconButton(
-                        content = {
-                            Icon(
-                                Icons.Rounded.Queue,
-                                contentDescription = "Add mission to queue"
+                ListItem(
+                    headlineContent = {
+                        Text(it.name)
+                    },
+                    supportingContent = {
+                        Text(it.guid)
+                    },
+                    trailingContent = {
+                        Row {
+                            IconButton(
+                                content = {
+                                    Icon(
+                                        Icons.Rounded.Edit,
+                                        contentDescription = "Edit Mission"
+                                    )
+                                },
+                                onClick = {
+                                    navController.navigate("missions/${it.guid}")
+                                }
                             )
-                        },
-                        onClick = {
-                            CoroutineScope(Dispatchers.IO).launch {
-                                MirApi.addMissionToQueue(mission = it)
-                            }
+                            IconButton(
+                                content = {
+                                    Icon(
+                                        Icons.Rounded.Queue,
+                                        contentDescription = "Add mission to queue"
+                                    )
+                                },
+                                onClick = {
+                                    CoroutineScope(Dispatchers.IO).launch {
+                                        MirApi.addMissionToQueue(mission = it)
+                                    }
+                                }
+                            )
                         }
-                    )
-                }
+                    }
+                )
                 HorizontalDivider()
             }
             item {

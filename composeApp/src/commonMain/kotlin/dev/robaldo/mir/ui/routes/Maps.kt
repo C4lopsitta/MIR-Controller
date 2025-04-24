@@ -54,7 +54,7 @@ fun Maps(
     var currentMap by remember { mutableStateOf<BotMap?>(null) }
 
     LaunchedEffect(botViewModel.isLoading.value) {
-        if(botViewModel.isLoading.value == true || botViewModel.status.value == null) return@LaunchedEffect
+        if(botViewModel.isLoading.value || botViewModel.status.value == null) return@LaunchedEffect
         currentMap = MirApi.getMap(botViewModel.status.value!!.mapId)
     }
 //
@@ -79,12 +79,12 @@ fun Maps(
         indicator = {
             PullRefreshIndicator(
                 state = refreshState,
-                modifier = Modifier.zIndex(2f)
+                modifier = Modifier.zIndex(1f)
             )
         }
     ) {
         LazyColumn (
-            modifier = Modifier.padding(12.dp)
+            modifier = Modifier.padding(12.dp).zIndex(-1f)
         ) {
             item {
                 Text(

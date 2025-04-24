@@ -2,8 +2,13 @@ package dev.robaldo.mir
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material.icons.rounded.AddBox
 import androidx.compose.material3.Text
 import androidx.compose.material3.ColorScheme
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -20,6 +25,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import dev.robaldo.mir.definitions.Routes
 import dev.robaldo.mir.models.flows.UiEvent
+import dev.robaldo.mir.models.responses.get.Item
 import dev.robaldo.mir.models.view.BotMapsViewModel
 import dev.robaldo.mir.models.view.BotMissionsViewModel
 import dev.robaldo.mir.models.view.BotViewModel
@@ -29,6 +35,9 @@ import dev.robaldo.mir.ui.routes.Home
 import dev.robaldo.mir.ui.routes.Maps
 import dev.robaldo.mir.ui.routes.MirBotManagement
 import dev.robaldo.mir.ui.routes.Missions
+import dev.robaldo.mir.ui.routes.MissionsEditor
+import io.ktor.client.network.sockets.ConnectTimeoutException
+import io.ktor.client.plugins.HttpRequestTimeoutException
 import kotlinx.coroutines.flow.MutableSharedFlow
 import okio.Path.Companion.toPath
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -101,16 +110,21 @@ fun App(
 
     val navController = rememberNavController()
     var fab by remember { mutableStateOf<(@Composable () -> Unit)?>(null) }
+    var showBackButton by remember { mutableStateOf(false) }
 
     LaunchedEffect(uiEvents) {
         uiEvents.collect { event ->
             when(event) {
                 is UiEvent.ApiError -> {
-                    snackbarHostState.showSnackbar(
-                        message = event.ex.message ?: "Undefined Error",
-                        withDismissAction = true,
-                        duration = SnackbarDuration.Long
-                    )
+                    // Filter out timeouts as they happen when the MiR bot is disconnected
+                    if(event.ex !is HttpRequestTimeoutException && event.ex !is ConnectTimeoutException) {
+                        Log.e("App", "ApiError", event.ex)
+                        snackbarHostState.showSnackbar(
+                            message = event.ex.message ?: "Undefined Error",
+                            withDismissAction = true,
+                            duration = SnackbarDuration.Long
+                        )
+                    }
                 }
             }
         }
@@ -129,7 +143,9 @@ fun App(
             topBar = {
                 TopBar(
                     title = "MIR",
-                    botViewModel = botViewModel
+                    botViewModel = botViewModel,
+                    showBackButton = showBackButton,
+                    navController = navController
                 )
             },
             floatingActionButton = fab ?: {},
@@ -146,20 +162,51 @@ fun App(
                 modifier = Modifier.padding( paddingValues )
             ) {
                 composable(Routes.HOME) {
+                    showBackButton = false
                     Home( botViewModel = botViewModel ) { fab = it }
                 }
 
-                composable(Routes.CONTROLLER) { Text("Controller") }
-                composable(Routes.MISSIONS) {
-                    Missions ( missionsViewModel = missionsViewModel ) { fab = it }
+                composable(Routes.CONTROLLER) {
+                    showBackButton = false
+                    Text("Controller")
                 }
+
+                composable(Routes.MISSIONS) {
+                    showBackButton = false
+                    fab = {
+                        FloatingActionButton(
+                            content = {
+                                Icon(
+                                    Icons.Rounded.Add,
+                                    contentDescription = "Add Mission"
+                                )
+                            },
+                            onClick = {
+                                val newMissionItem = Item("", "", "")
+
+                                navController.navigate("missions/${newMissionItem.guid}")
+                            }
+                        )
+                    }
+                    Missions ( navController = navController, missionsViewModel = missionsViewModel )
+                }
+
+                composable(Routes.MISSION_EDITOR) {
+                    showBackButton = true
+                    val guid = it.arguments?.getString("guid") ?: return@composable
+                    var openSheet: () -> Unit = {}
+                    MissionsEditor( navController = navController, guid = guid, uiEvents = uiEvents) { fab = it }
+                }
+
                 composable(Routes.MAPS) {
+                    showBackButton = false
                     Maps(
                         mapsViewModel = mapsViewModel,
                         botViewModel = botViewModel
                     )
                 }
                 composable(Routes.ROBOT) {
+                    showBackButton = false
                     MirBotManagement( botViewModel = botViewModel ) { fab = it }
                 }
             }

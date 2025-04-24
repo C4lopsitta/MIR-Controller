@@ -10,6 +10,7 @@ object Routes {
     const val HOME = "home"
     const val CONTROLLER = "controller"
     const val MISSIONS = "missions"
+    const val MISSION_EDITOR = "missions/{guid}"
     const val MAPS = "maps"
     const val ROBOT = "mir-bot"
 }
