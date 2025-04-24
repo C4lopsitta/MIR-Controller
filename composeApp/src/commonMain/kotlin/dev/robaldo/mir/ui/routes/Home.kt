@@ -94,10 +94,6 @@ fun Home(
                         mesh = obj("MiR100_LED.obj"),
                         transform = scale(0.09f)
                     )
-
-                    PointLight(
-
-                    )
                 }
             }
         }
