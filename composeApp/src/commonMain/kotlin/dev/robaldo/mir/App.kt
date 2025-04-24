@@ -118,14 +118,14 @@ fun App(
             when(event) {
                 is UiEvent.ApiError -> {
                     // Filter out timeouts as they happen when the MiR bot is disconnected
-                    if(event.ex !is HttpRequestTimeoutException && event.ex !is ConnectTimeoutException) {
-                        Log.e("App", "ApiError", event.ex)
-                        snackbarHostState.showSnackbar(
-                            message = event.ex.message ?: "Undefined Error",
-                            withDismissAction = true,
-                            duration = SnackbarDuration.Long
-                        )
-                    }
+                    if(event.ex is HttpRequestTimeoutException) return@collect
+                    if(event.ex is ConnectTimeoutException) return@collect
+                    Log.e("App", "ApiError", event.ex)
+                    snackbarHostState.showSnackbar(
+                        message = event.ex.message ?: "Undefined Error",
+                        withDismissAction = true,
+                        duration = SnackbarDuration.Long
+                    )
                 }
             }
         }

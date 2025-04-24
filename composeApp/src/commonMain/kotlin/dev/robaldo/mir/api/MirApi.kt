@@ -8,6 +8,7 @@ import dev.robaldo.mir.models.status.BotStatus
 import dev.robaldo.mir.models.requests.post.EnqueueMission
 import dev.robaldo.mir.models.responses.get.Item
 import dev.robaldo.mir.Log
+import dev.robaldo.mir.exceptions.AuthenticationException
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -89,6 +90,8 @@ object MirApi {
 
         Log.d("MirApi.getMissions()", response.bodyAsText())
 
+        if(response.status == HttpStatusCode.Unauthorized) throw AuthenticationException()
+        if(response.status != HttpStatusCode.OK) throw Exception(response.bodyAsText())
         val missions = Json.decodeFromString<List<Item>>(response.bodyAsText())
         return missions
     }
