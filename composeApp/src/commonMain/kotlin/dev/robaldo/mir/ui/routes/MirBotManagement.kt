@@ -10,9 +10,15 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Circle
+import androidx.compose.material.icons.rounded.Dns
 import androidx.compose.material.icons.rounded.Error
+import androidx.compose.material.icons.rounded.Key
+import androidx.compose.material.icons.rounded.Person
+import androidx.compose.material.icons.rounded.Visibility
+import androidx.compose.material.icons.rounded.VisibilityOff
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -65,6 +71,7 @@ fun MirBotManagement(
     var address by remember { mutableStateOf("") }
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var isPasswordVisible by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         address = AppPreferences.getAddress()
@@ -192,6 +199,11 @@ fun MirBotManagement(
         item {
             OutlinedTextField(
                 value = address,
+                label = { Text("Address") },
+                singleLine = true,
+                leadingIcon = {
+                    Icon(Icons.Rounded.Dns, contentDescription = "Address")
+                },
                 modifier = Modifier.fillMaxWidth().padding( bottom = 12.dp ),
                 onValueChange = {
                     address = it
@@ -199,35 +211,54 @@ fun MirBotManagement(
                         AppPreferences.setAddress(it)
                     }
                 },
-                placeholder = { Text("Address") }
+                placeholder = { Text("IP Address or Domain") }
             )
         }
 
         item {
             OutlinedTextField(
                 value = username,
+                label = { Text("Username") },
+                singleLine = true,
                 modifier = Modifier.fillMaxWidth().padding( bottom = 12.dp ),
+                leadingIcon = {
+                    Icon(Icons.Rounded.Person, contentDescription = "Username")
+                },
                 onValueChange = {
                     username = it
                     updateValue {
                         AppPreferences.setUsername(it)
                     }
                 },
-                placeholder = { Text("Username") }
+                placeholder = { Text("Your Username") }
             )
         }
 
         item {
             OutlinedTextField(
                 value = password,
+                label = { Text("Password") },
+                singleLine = true,
+                leadingIcon = {
+                    Icon(Icons.Rounded.Key, contentDescription = "Password")
+                },
+                trailingIcon = {
+                    IconButton(
+                        content = { Icon(if(isPasswordVisible) Icons.Rounded.VisibilityOff else Icons.Rounded.Visibility, contentDescription = "Show Password") },
+                        onClick = {
+                            isPasswordVisible = !isPasswordVisible
+                        }
+                    )
+                },
                 modifier = Modifier.fillMaxWidth().padding( bottom = 12.dp ),
+                visualTransformation = if(isPasswordVisible) androidx.compose.ui.text.input.VisualTransformation.None else androidx.compose.ui.text.input.PasswordVisualTransformation(),
                 onValueChange = {
                     password = it
                     updateValue {
                         AppPreferences.setPassword(it)
                     }
                 },
-                placeholder = { Text("Password") }
+                placeholder = { Text("Your Password") }
             )
         }
     }
