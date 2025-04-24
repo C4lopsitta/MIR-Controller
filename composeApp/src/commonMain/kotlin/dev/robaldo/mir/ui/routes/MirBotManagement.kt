@@ -16,13 +16,16 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowDropDown
 import androidx.compose.material.icons.rounded.ArrowDropUp
+import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.Circle
 import androidx.compose.material.icons.rounded.Dns
 import androidx.compose.material.icons.rounded.Error
 import androidx.compose.material.icons.rounded.Key
 import androidx.compose.material.icons.rounded.Person
+import androidx.compose.material.icons.rounded.PersonOff
 import androidx.compose.material.icons.rounded.Visibility
 import androidx.compose.material.icons.rounded.VisibilityOff
+import androidx.compose.material.icons.rounded.Warning
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -232,6 +235,7 @@ fun MirBotManagement(
                             value = address,
                             label = { Text("Address") },
                             singleLine = true,
+                            isError = connectionTestingStatus == ConnectionTestStatus.FAILURE,
                             leadingIcon = {
                                 Icon(Icons.Rounded.Dns, contentDescription = "Address")
                             },
@@ -297,12 +301,28 @@ fun MirBotManagement(
 
                         OutlinedButton (
                             content = {
-                                when(connectionTestingStatus) {
-                                    ConnectionTestStatus.TODO -> Text("Test Connection")
-                                    ConnectionTestStatus.IN_PROGRESS -> CircularProgressIndicator( modifier = Modifier.height(12.dp).width(12.dp) )
-                                    ConnectionTestStatus.SUCCESS -> Text("Successfully Connected")
-                                    ConnectionTestStatus.FAILURE -> Text("Failed to Connect")
-                                    ConnectionTestStatus.FAILURE_AUTHENTICATION -> Text("Wrong Credentials")
+                                Row (
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy( 8.dp )
+                                ) {
+                                    when (connectionTestingStatus) {
+                                        ConnectionTestStatus.TODO -> Text("Test Connection")
+                                        ConnectionTestStatus.IN_PROGRESS -> CircularProgressIndicator(
+                                            modifier = Modifier.height(12.dp).width(12.dp)
+                                        )
+                                        ConnectionTestStatus.SUCCESS -> {
+                                            Icon( Icons.Rounded.Check, contentDescription = "Success" )
+                                            Text("Successfully Connected")
+                                        }
+                                        ConnectionTestStatus.FAILURE -> {
+                                            Icon( Icons.Rounded.Warning, contentDescription = "Failure" )
+                                            Text("Failed to Connect")
+                                        }
+                                        ConnectionTestStatus.FAILURE_AUTHENTICATION -> {
+                                            Icon( Icons.Rounded.PersonOff, contentDescription = "Credentials" )
+                                            Text("Wrong Credentials")
+                                        }
+                                    }
                                 }
                             },
                             modifier = Modifier.fillMaxWidth(),
