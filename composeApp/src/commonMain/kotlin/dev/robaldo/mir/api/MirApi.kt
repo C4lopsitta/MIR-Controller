@@ -6,6 +6,7 @@ import dev.robaldo.mir.models.missions.BotMission
 import dev.robaldo.mir.models.status.BotStatus
 import dev.robaldo.mir.models.requests.post.EnqueueMission
 import dev.robaldo.mir.models.responses.get.Item
+import dev.robaldo.mir.Log
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -70,6 +71,8 @@ object MirApi {
             }
         }
 
+        Log.d("MirApi.getMissions()", response.bodyAsText())
+
         val missions = Json.decodeFromString<List<Item>>(response.bodyAsText())
         return missions
     }
@@ -81,6 +84,7 @@ object MirApi {
             }
         }
 
+        Log.d("MirApi.getMission()", response.bodyAsText())
         if(response.status != HttpStatusCode.OK) throw Exception(response.bodyAsText())
         val json = Json { ignoreUnknownKeys = true }
         return json.decodeFromString<BotMission>(response.bodyAsText())
@@ -93,6 +97,7 @@ object MirApi {
             }
         }
 
+        Log.d("MirApi.getMissionActions()", response.bodyAsText())
         if(response.status != HttpStatusCode.OK) throw Exception(response.bodyAsText())
 
         val json = Json { ignoreUnknownKeys = true }
@@ -134,8 +139,9 @@ object MirApi {
             }
         }
 
-        if(response.status != HttpStatusCode.OK) return null
+        Log.d("MirApi.getBotStatus()", response.bodyAsText())
 
+        if(response.status != HttpStatusCode.OK) return null
         val json = Json { ignoreUnknownKeys = true }
         return json.decodeFromString<BotStatus>(response.bodyAsText())
     }
@@ -153,6 +159,8 @@ object MirApi {
                 append("Authorization", TOKEN_TEMP)
             }
         }
+
+        Log.d("MirApi.getMaps()", response.bodyAsText())
 
         if(response.status != HttpStatusCode.OK) return emptyList()
 
@@ -174,6 +182,8 @@ object MirApi {
                 append("Authorization", TOKEN_TEMP)
             }
         }
+
+        Log.d("MirApi.getMap()", response.bodyAsText())
 
         if(response.status != HttpStatusCode.OK) throw Exception("Could not load map")
 
