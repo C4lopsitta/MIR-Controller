@@ -1,5 +1,6 @@
 package dev.robaldo.mir.api
 
+import dev.robaldo.mir.AppPreferences
 import dev.robaldo.mir.models.missions.BotMissionAction
 import dev.robaldo.mir.models.BotMap
 import dev.robaldo.mir.models.missions.BotMission
@@ -38,10 +39,6 @@ import org.kotlincrypto.hash.sha2.SHA256
  */
 object MirApi {
     // This token is a temporary value that will be replaced with a calculated one with task "Token and Authorization"
-    private const val TOKEN_TEMP =
-        "Basic aXRpc2RlbHBvenpvOjlhZDVhYjA0NDVkZTE4ZDI4Nzg0NjMzNzNkNmRiZGIxZWUzZTFmZjg2YzBhYmY4OGJiMzU5YzNkYzVmMzBiNGQ="
-    private const val MIR_ROBOT_IP_TEMP = "192.168.12.20"
-
     private const val BASE_URL = "/api/v2.0.0"
 
     /**
@@ -71,7 +68,7 @@ object MirApi {
         val hashedPassword = digest.digest()
         val compound = "$username:$hashedPassword"
 
-        return Base64.encode(compound.toByteArray());
+        return "Basic " + Base64.encode(compound.toByteArray());
     }
 
     /**
@@ -82,9 +79,11 @@ object MirApi {
      * @author Simone Robaldo
      */
     suspend fun getMissions(): List<Item> {
-        val response = client.get(Url("http://$MIR_ROBOT_IP_TEMP$BASE_URL/missions")) {
+        val token = generateAuthToken(AppPreferences.getUsername(), AppPreferences.getPassword())
+
+        val response = client.get(Url("http://${AppPreferences.getAddress()}$BASE_URL/missions")) {
             headers {
-                append("Authorization", TOKEN_TEMP)
+                append("Authorization", token)
             }
         }
 
@@ -95,9 +94,11 @@ object MirApi {
     }
 
     suspend fun getMission(guid: String): BotMission {
-        val response = client.get(Url("http://$MIR_ROBOT_IP_TEMP$BASE_URL/missions/$guid")) {
+        val token = generateAuthToken(AppPreferences.getUsername(), AppPreferences.getPassword())
+
+        val response = client.get(Url("http://${AppPreferences.getAddress()}$BASE_URL/missions/$guid")) {
             headers {
-                append("Authorization", TOKEN_TEMP)
+                append("Authorization", token)
             }
         }
 
@@ -108,9 +109,11 @@ object MirApi {
     }
 
     suspend fun getMissionActions(missionData: BotMission): List<BotMissionAction> {
-        val response = client.get(Url("http://$MIR_ROBOT_IP_TEMP/api${missionData.actionsUrl}")) {
+        val token = generateAuthToken(AppPreferences.getUsername(), AppPreferences.getPassword())
+
+        val response = client.get(Url("http://${AppPreferences.getAddress()}/api${missionData.actionsUrl}")) {
             headers {
-                append("Authorization", TOKEN_TEMP)
+                append("Authorization", token)
             }
         }
 
@@ -131,9 +134,11 @@ object MirApi {
      * @author Simone Robaldo
      */
     suspend fun addMissionToQueue(mission: Item): Boolean {
-        val response = client.post(Url("http://$MIR_ROBOT_IP_TEMP$BASE_URL/mission_queue")) {
+        val token = generateAuthToken(AppPreferences.getUsername(), AppPreferences.getPassword())
+
+        val response = client.post(Url("http://${AppPreferences.getAddress()}$BASE_URL/mission_queue")) {
             headers {
-                append("Authorization", TOKEN_TEMP)
+                append("Authorization", token)
             }
             contentType(ContentType.Application.Json)
             setBody( EnqueueMission(mission.guid) )
@@ -150,9 +155,11 @@ object MirApi {
      * @author Simone Robaldo
      */
     suspend fun getBotStatus(): BotStatus? {
-        val response = client.get(Url("http://$MIR_ROBOT_IP_TEMP$BASE_URL/status")) {
+        val token = generateAuthToken(AppPreferences.getUsername(), AppPreferences.getPassword())
+
+        val response = client.get(Url("http://${AppPreferences.getAddress()}$BASE_URL/status")) {
             headers {
-                append("Authorization", TOKEN_TEMP)
+                append("Authorization", token)
             }
         }
 
@@ -171,9 +178,11 @@ object MirApi {
      * @author Simone Robaldo
      */
     suspend fun getMaps(): List<Item> {
-        val response = client.get(Url("http://$MIR_ROBOT_IP_TEMP$BASE_URL/maps")) {
+        val token = generateAuthToken(AppPreferences.getUsername(), AppPreferences.getPassword())
+
+        val response = client.get(Url("http://${AppPreferences.getAddress()}$BASE_URL/maps")) {
             headers {
-                append("Authorization", TOKEN_TEMP)
+                append("Authorization", token)
             }
         }
 
@@ -194,9 +203,11 @@ object MirApi {
      * @author Simone Robaldo
      */
     suspend fun getMap(map: String): BotMap {
-        val response = client.get(Url("http://$MIR_ROBOT_IP_TEMP$BASE_URL/maps/$map")) {
+        val token = generateAuthToken(AppPreferences.getUsername(), AppPreferences.getPassword())
+
+        val response = client.get(Url("http://${AppPreferences.getAddress()}$BASE_URL/maps/$map")) {
             headers {
-                append("Authorization", TOKEN_TEMP)
+                append("Authorization", token)
             }
         }
 

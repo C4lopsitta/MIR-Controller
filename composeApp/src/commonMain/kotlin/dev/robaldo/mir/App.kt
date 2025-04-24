@@ -104,6 +104,7 @@ fun App(
     botViewModel: BotViewModel = BotViewModel(uiEvents = uiEvents)
 ) {
     val snackbarHostState by remember { mutableStateOf(SnackbarHostState()) }
+    AppPreferences.prefs = storePreferences()
 
 //    var botStatusPollingDelay by remember { mutableStateOf(500L) }
 //    var doAutoUpdateBotStatus by remember { mutableStateOf(true) }
