@@ -85,7 +85,8 @@ fun MirBotManagement(
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var isPasswordVisible by remember { mutableStateOf(false) }
-    var isAuthenticationCollapsed by remember { mutableStateOf(false) }
+    var isAuthenticationCollapsed by remember { mutableStateOf(botViewModel.status.value != null) }
+    var isErrorsCollapsed by remember { mutableStateOf(true) }
     var connectionTestingStatus by remember { mutableStateOf(ConnectionTestStatus.TODO) }
 
     LaunchedEffect(Unit) {
@@ -320,6 +321,38 @@ fun MirBotManagement(
                                 }
                             }
                         )
+                    }
+                }
+            }
+        }
+
+        if(botViewModel.status.value?.errors?.isNotEmpty() == true) {
+            item {
+                Column {
+                    Row(
+                        modifier = Modifier
+                            .clickable { isErrorsCollapsed = !isErrorsCollapsed }
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            "Errors",
+                            style = MaterialTheme.typography.headlineLarge,
+                            modifier = Modifier.padding(vertical = 12.dp)
+                        )
+                        Icon(
+                            if (isErrorsCollapsed) Icons.Rounded.ArrowDropDown else Icons.Rounded.ArrowDropUp,
+                            contentDescription = ""
+                        )
+                    }
+
+                    AnimatedVisibility(
+                        visible = !isErrorsCollapsed
+                    ) {
+                        Column {
+
+                        }
                     }
                 }
             }
