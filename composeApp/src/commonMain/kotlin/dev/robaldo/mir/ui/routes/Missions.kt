@@ -126,7 +126,7 @@ fun Missions(
                         Text(
                             "Pull to Refresh",
                             color = MaterialTheme.colorScheme.onSurface,
-                            modifier = Modifier.padding( horizontal = 32.dp, vertical = 12.dp ),
+                            modifier = Modifier.padding( start = 32.dp, end = 32.dp, top = 12.dp ),
                             fontSize = 24.sp,
                             textAlign = TextAlign.Center
                         )
