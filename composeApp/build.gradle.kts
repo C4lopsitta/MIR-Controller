@@ -66,9 +66,10 @@ kotlin {
             implementation(libs.datastore)
             implementation(libs.datastore.preferences)
             implementation(libs.materii.pullrefresh)
-
             // 3D Renderer
             implementation(libs.korender)
+            implementation(platform("org.kotlincrypto.hash:bom:0.7.0"))
+            implementation("org.kotlincrypto.hash:sha2")
         }
 
         desktopMain.dependencies {

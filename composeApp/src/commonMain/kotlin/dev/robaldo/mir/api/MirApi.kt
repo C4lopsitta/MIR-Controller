@@ -19,8 +19,13 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.Url
 import io.ktor.http.contentType
+import io.ktor.network.tls.extensions.HashAlgorithm
 import io.ktor.serialization.kotlinx.json.json
+import io.ktor.utils.io.core.toByteArray
 import kotlinx.serialization.json.Json
+import kotlin.io.encoding.Base64
+import kotlin.io.encoding.ExperimentalEncodingApi
+import org.kotlincrypto.hash.sha2.SHA256
 
 /**
  * Object used to interface with the MiR 100 Robot.
@@ -48,13 +53,25 @@ object MirApi {
         }
     }
 
+    /**
+     * Generate the HTTP auth bearer using base64 encoding and SHA256
+     * @param username The username to access the robot
+     * @param password The password to access the robot
+     * @return A [String] of the bearer
+     *
+     * @author Marco Garro
+     */
+    @OptIn(ExperimentalEncodingApi::class)
     private fun generateAuthToken(
         username: String,
         password: String
     ): String {
-        val compound = "$username:$password"
+        val digest = SHA256()
+        digest.update(password.toByteArray())
+        val hashedPassword = digest.digest()
+        val compound = "$username:$hashedPassword"
 
-        return ""
+        return Base64.encode(compound.toByteArray());
     }
 
     /**
