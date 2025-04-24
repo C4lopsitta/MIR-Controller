@@ -44,7 +44,8 @@ import dev.robaldo.mir.models.view.BotViewModel
 @Composable
 fun Maps(
     mapsViewModel: BotMapsViewModel,
-    botViewModel: BotViewModel
+    botViewModel: BotViewModel,
+
 ) {
     val refreshState = rememberPullRefreshState(
         refreshing = mapsViewModel.isLoading.value,
@@ -55,7 +56,11 @@ fun Maps(
 
     LaunchedEffect(botViewModel.isLoading.value) {
         if(botViewModel.isLoading.value || botViewModel.status.value == null) return@LaunchedEffect
-        currentMap = MirApi.getMap(botViewModel.status.value!!.mapId)
+        try {
+            currentMap = MirApi.getMap(botViewModel.status.value!!.mapId)
+        } catch (e: Exception) {
+
+        }
     }
 //
 //    fun decodeBase64PngToImageBitmap(base64String: String): ImageBitmap? {

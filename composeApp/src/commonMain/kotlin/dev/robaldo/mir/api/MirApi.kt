@@ -59,14 +59,14 @@ object MirApi {
      *
      * @author Marco Garro
      */
-    @OptIn(ExperimentalEncodingApi::class)
+    @OptIn(ExperimentalEncodingApi::class, ExperimentalStdlibApi::class)
     private fun generateAuthToken(
         username: String,
         password: String
     ): String {
         val digest = SHA256()
         digest.update(password.toByteArray())
-        val hashedPassword = digest.digest()
+        val hashedPassword = digest.digest().toHexString()
         val compound = "$username:$hashedPassword"
 
         return "Basic " + Base64.encode(compound.toByteArray());

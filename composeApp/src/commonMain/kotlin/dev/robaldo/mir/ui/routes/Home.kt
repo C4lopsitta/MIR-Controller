@@ -1,17 +1,24 @@
 package dev.robaldo.mir.ui.routes
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.ArrowRight
+import androidx.compose.material.icons.rounded.ArrowRight
+import androidx.compose.material.icons.rounded.Warehouse
 import androidx.compose.material.icons.rounded.WifiTethering
 import androidx.compose.material.icons.rounded.WifiTetheringOff
+import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -98,24 +105,78 @@ fun Home(
             }
         }
 
-        Column (
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.fillMaxSize()
+        LazyColumn (
+            modifier = Modifier.padding( all = 12.dp )
         ) {
-            Icon(
-                if(botViewModel.status.value == null) Icons.Rounded.WifiTetheringOff else Icons.Rounded.WifiTethering,
-                contentDescription = "Icon",
-                tint = MaterialTheme.colorScheme.onSurface,
-                modifier = Modifier.width(92.dp).height(92.dp)
-            )
-            Text(
-                "MiR " + if(botViewModel.status.value == null) "Disconnected" else "Connected",
-                color = MaterialTheme.colorScheme.onSurface,
-                modifier = Modifier.padding( horizontal = 32.dp, vertical = 12.dp ),
-                fontSize = 24.sp,
-                textAlign = TextAlign.Center
-            )
+            item {
+                Text(
+                    "Services",
+                    style = MaterialTheme.typography.headlineLarge,
+                    modifier = Modifier.padding(vertical = 12.dp)
+                )
+            }
+            item {
+                Card (
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable {
+
+                        }
+                        .padding( vertical = 12.dp )
+                ) {
+                    Row (
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Row (
+                            modifier = Modifier.fillMaxWidth(0.8f)
+                        ) {
+                            Icon(
+                                Icons.Rounded.Warehouse,
+                                contentDescription = "Delivery",
+                                modifier = Modifier.padding(all = 12.dp)
+                            )
+                            Column (
+                                modifier = Modifier.padding( vertical = 12.dp )
+                            ) {
+                                Text(
+                                    "Delivery",
+                                    style = MaterialTheme.typography.titleLarge
+                                )
+                                Text("Pick an item from the warehouse and get it delivered to your classroom")
+                            }
+                        }
+                        Icon(
+                            Icons.AutoMirrored.Rounded.ArrowRight,
+                            contentDescription = "Open",
+                            modifier = Modifier
+                                .padding( all = 12.dp )
+                                .width(24.dp)
+                                .height(24.dp)
+                        )
+                    }
+                }
+            }
         }
+//
+//        Column (
+//            verticalArrangement = Arrangement.Center,
+//            horizontalAlignment = Alignment.CenterHorizontally,
+//            modifier = Modifier.fillMaxSize()
+//        ) {
+//            Icon(
+//                if(botViewModel.status.value == null) Icons.Rounded.WifiTetheringOff else Icons.Rounded.WifiTethering,
+//                contentDescription = "Icon",
+//                tint = MaterialTheme.colorScheme.onSurface,
+//                modifier = Modifier.width(92.dp).height(92.dp)
+//            )
+//            Text(
+//                "MiR " + if(botViewModel.status.value == null) "Disconnected" else "Connected",
+//                color = MaterialTheme.colorScheme.onSurface,
+//                modifier = Modifier.padding( horizontal = 32.dp, vertical = 12.dp ),
+//                fontSize = 24.sp,
+//                textAlign = TextAlign.Center
+//            )
+//        }
     }
 }

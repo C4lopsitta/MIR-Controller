@@ -20,5 +20,9 @@ data class BotError(
     @SerialName("code") val code: Int?,
     @SerialName("description") val description: String?,
     @SerialName("module") val module: String?
-)
+) {
+    override fun toString(): String {
+        return "BotError(code=$code, description=$description, module=$module)"
+    }
+}
 

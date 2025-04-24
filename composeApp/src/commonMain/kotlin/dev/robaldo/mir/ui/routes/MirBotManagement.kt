@@ -351,7 +351,9 @@ fun MirBotManagement(
                         visible = !isErrorsCollapsed
                     ) {
                         Column {
-
+                            botViewModel.status.value!!.errors.forEach { error ->
+                                Text(error.toString())
+                            }
                         }
                     }
                 }

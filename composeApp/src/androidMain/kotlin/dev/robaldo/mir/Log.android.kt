@@ -1,7 +1,7 @@
 package dev.robaldo.mir
 
 actual object Log {
-    actual val onlyCritical: Boolean = true
+    actual val onlyCritical: Boolean = false
 
     actual fun d(tag: String, message: String) {
         if(onlyCritical) return
