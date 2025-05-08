@@ -37,6 +37,10 @@ import dev.robaldo.mir.api.MirApi
 import dev.robaldo.mir.models.BotMap
 import dev.robaldo.mir.models.view.BotMapsViewModel
 import dev.robaldo.mir.models.view.BotViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
+import kotlinx.coroutines.launch
 
 /**
  * The Maps route composable body.
@@ -162,7 +166,9 @@ fun Maps(
                                     }
                                 },
                                 onClick = {
-                                    TODO("Gotta add call to set map")
+                                    CoroutineScope(Dispatchers.IO).launch {
+                                        MirApi.setMap(item = it)
+                                    }
                                 }
                             )
                         }

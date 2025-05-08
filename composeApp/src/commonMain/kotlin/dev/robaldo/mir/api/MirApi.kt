@@ -9,12 +9,14 @@ import dev.robaldo.mir.models.requests.post.EnqueueMission
 import dev.robaldo.mir.models.responses.get.Item
 import dev.robaldo.mir.Log
 import dev.robaldo.mir.exceptions.AuthenticationException
+import dev.robaldo.mir.models.requests.put.SetMap
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.get
 import io.ktor.client.request.headers
 import io.ktor.client.request.post
+import io.ktor.client.request.put
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
@@ -197,6 +199,25 @@ object MirApi {
         return json.decodeFromString<List<Item>>(response.bodyAsText())
     }
 
+    /**
+     * Set the selected map on MiR.
+     *
+     * @param item The selected map.
+     * @throws Exception If the request fails.
+     * @return null
+     * @author Marco Garro
+     */
+    suspend fun setMap(item: Item){
+        val token = generateAuthToken(AppPreferences.getUsername(), AppPreferences.getPassword())
+
+        val response = client.put(Url("http://${AppPreferences.getAddress()}$BASE_URL/status")) {
+            headers {
+                append("Authorization", token)
+            }
+            contentType(ContentType.Application.Json)
+            setBody( SetMap(item.guid) )
+        }
+    }
     /**
      * Fetches an individual map from the MiR 100 Robot.
      *
