@@ -31,6 +31,7 @@ import dev.robaldo.mir.models.view.BotMissionsViewModel
 import dev.robaldo.mir.models.view.BotViewModel
 import dev.robaldo.mir.ui.components.AppNavigationBar
 import dev.robaldo.mir.ui.components.TopBar
+import dev.robaldo.mir.ui.routes.Delivery
 import dev.robaldo.mir.ui.routes.Home
 import dev.robaldo.mir.ui.routes.Maps
 import dev.robaldo.mir.ui.routes.MirBotManagement
@@ -164,7 +165,10 @@ fun App(
             ) {
                 composable(Routes.HOME) {
                     showBackButton = false
-                    Home( botViewModel = botViewModel ) { fab = it }
+                    Home(
+                        botViewModel = botViewModel,
+                        navController = navController
+                    ) { fab = it }
                 }
 
                 composable(Routes.CONTROLLER) {
@@ -209,6 +213,13 @@ fun App(
                 composable(Routes.ROBOT) {
                     showBackButton = false
                     MirBotManagement( botViewModel = botViewModel ) { fab = it }
+                }
+
+                // DELIVERY API
+
+                composable(Routes.DELIVERY) {
+                    showBackButton = true
+                    Delivery()
                 }
             }
         }

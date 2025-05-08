@@ -13,4 +13,5 @@ object Routes {
     const val MISSION_EDITOR = "missions/{guid}"
     const val MAPS = "maps"
     const val ROBOT = "mir-bot"
+    const val DELIVERY = "delivery"
 }

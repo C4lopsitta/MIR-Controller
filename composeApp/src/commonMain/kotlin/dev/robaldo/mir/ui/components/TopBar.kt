@@ -12,9 +12,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -50,6 +47,7 @@ fun TopBar(
         },
         actions = {
             actions()
+//            BatteryPill(botViewModel.status.value?.batteryPercentage ?: 0F)
             Icon(botViewModel.batteryStatus.value.toIcon(), contentDescription = null, modifier = Modifier.padding( horizontal = 12.dp ))
         },
         navigationIcon = {
